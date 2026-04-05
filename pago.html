@@ -142,9 +142,21 @@ async function iniciarPago(){
     document.getElementById('total-display').textContent = `$${Number(total).toLocaleString('es-AR')}`;
 
     // Crear preferencia de pago via MP
+    // Asegurar que los items son válidos
+    const itemsValidos = items.filter(i => (i.nombre||i.title) && (i.precio||i.unit_price));
+    if(!itemsValidos.length) {
+      // Si no hay items del localStorage, crear uno genérico con el total
+      itemsValidos.push({
+        title: `Pedido ${comercioNombre}`,
+        quantity: 1,
+        unit_price: total,
+        currency_id: 'ARS'
+      });
+    }
+
     const preference = {
-      items: items.map(i=>({
-        title: i.nombre || i.title || 'Producto',
+      items: itemsValidos.map(i=>({
+        title: String(i.nombre || i.title || 'Producto'),
         quantity: parseInt(i.quantity || i.qty || 1),
         unit_price: parseFloat(i.precio || i.unit_price || 0),
         currency_id: 'ARS'

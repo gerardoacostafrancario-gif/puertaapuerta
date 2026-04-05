@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Puerta a Puerta — Ingresar</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f5f5f5;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.container{width:100%;max-width:400px;padding:20px;}
+
+.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
+.logo-box{width:64px;height:64px;border-radius:18px;background:#FF6B35;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.app-name{font-size:24px;font-weight:900;color:#111;}
+.app-tag{font-size:12px;color:#888;margin-top:4px;letter-spacing:.04em;}
+
+.card{background:#fff;border-radius:20px;padding:28px 24px;border:0.5px solid #eee;}
+.card-title{font-size:18px;font-weight:700;color:#111;margin-bottom:6px;}
+.card-sub{font-size:13px;color:#888;margin-bottom:24px;line-height:1.5;}
+
+.role-tabs{display:flex;gap:8px;margin-bottom:20px;}
+.role-tab{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid #eee;text-align:center;font-size:12px;font-weight:600;color:#888;cursor:pointer;transition:.15s;}
+.role-tab.active{border-color:#FF6B35;color:#FF6B35;background:#FFF3E0;}
+
+.form-group{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:600;color:#555;margin-bottom:5px;display:block;}
+.form-input{width:100%;border:1.5px solid #eee;border-radius:10px;padding:11px 14px;font-size:14px;color:#111;outline:none;transition:.15s;}
+.form-input:focus{border-color:#FF6B35;}
+
+.btn-login{width:100%;background:#FF6B35;color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:.15s;}
+.btn-login:hover{opacity:.9;}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.divider-line{flex:1;height:1px;background:#eee;}
+.divider-text{font-size:12px;color:#aaa;}
+
+.btn-register{width:100%;background:#f5f5f5;color:#555;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-register:hover{background:#eee;}
+
+.error-msg{background:#FFEBEE;color:#B71C1C;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+.success-msg{background:#E8F5E9;color:#2E7D32;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+
+.forgot-link{text-align:center;margin-top:14px;}
+.forgot-link a{font-size:12px;color:#FF6B35;text-decoration:none;}
+
+.admin-hint{background:#FFF3E0;border-radius:10px;padding:10px 14px;font-size:12px;color:#E65100;margin-top:12px;line-height:1.5;display:none;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-wrap">
+    <div class="logo-box">
+      <svg width="36" height="36" viewBox="0 0 90 90" fill="none">
+        <path d="M10 36 L45 18 L80 36" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="36" width="30" height="46" rx="4" fill="#fff" opacity=".9"/>
+        <rect x="48" y="36" width="30" height="46" rx="4" fill="#fff"/>
+        <circle cx="36" cy="59" r="4" fill="#FF6B35"/>
+        <circle cx="54" cy="59" r="4" fill="#FF6B35"/>
+      </svg>
+    </div>
+    <div class="app-name">Puerta a Puerta</div>
+    <div class="app-tag">Tu pedido, ya mismo.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="card-title">Bienvenido</div>
+    <div class="card-sub" id="card-sub">Elegí tu tipo de acceso para continuar.</div>
+
+    <div class="role-tabs">
+      <div class="role-tab active" id="tab-comercio" onclick="setRole('comercio')">🏪 Comercio</div>
+      <div class="role-tab" id="tab-cadete" onclick="setRole('cadete')">🏍️ Cadete</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" id="label-user">Email del comercio</label>
+      <input class="form-input" id="input-user" type="email" placeholder="tucorreo@gmail.com"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contraseña</label>
+      <input class="form-input" id="input-pass" type="password" placeholder="••••••••"/>
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="login()">Ingresar</button>
+
+    <div class="error-msg" id="error-msg"></div>
+    <div class="success-msg" id="success-msg"></div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">¿No tenés cuenta?</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <button class="btn-register" id="btn-register" onclick="irARegistro()">Registrarme como comercio</button>
+
+    <div class="forgot-link">
+      <a href="#" onclick="olvideClave()">Olvidé mi contraseña</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SU='https://fmqlpgerqdiplnvjjarl.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcWxwZ2VycWRpcGxudmpqYXJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MTkwNTYsImV4cCI6MjA5MDQ5NTA1Nn0.r1X4NSX8t-v9EeJQ-eK9DVslIWkpo2_UCn-oRy6k--w';
+const sb=supabase.createClient(SU,SK);
+
+const ADMIN_EMAIL = 'gerardoacostafrancario@gmail.com';
+let role = 'comercio';
+
+function setRole(r) {
+  role = r;
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+r).classList.add('active');
+  document.getElementById('admin-hint').style.display = r==='admin'?'block':'none';
+  document.getElementById('error-msg').style.display='none';
+  document.getElementById('success-msg').style.display='none';
+
+  if(r==='comercio'){
+    document.getElementById('card-title').textContent='Panel del comercio';
+    document.getElementById('card-sub').textContent='Ingresá para gestionar tus pedidos y menú.';
+    document.getElementById('label-user').textContent='Email del comercio';
+    document.getElementById('input-user').type='email';
+    document.getElementById('input-user').placeholder='tucorreo@gmail.com';
+    document.getElementById('btn-register').style.display='block';
+    document.getElementById('btn-register').textContent='Registrarme como comercio';
+  } else if(r==='cadete'){
+    document.getElementById('card-title').textContent='Panel del cadete';
+    document.getElementById('card-sub').textContent='Ingresá para ver y aceptar viajes.';
+    document.getElementById('label-user').textContent='Email o teléfono';
+    document.getElementById('input-user').type='email';
+    document.getElementById('input-user').placeholder='tucorreo@gmail.com';
+    document.getElementById('btn-register').style.display='block';
+    document.getElementById('btn-register').textContent='Registrarme como cadete';
+  } else {
+    document.getElementById('card-title').textContent='Administración';
+    document.getElementById('card-sub').textContent='Acceso restringido para administradores.';
+    document.getElementById('label-user').textContent='Email de administrador';
+    document.getElementById('input-user').type='email';
+    document.getElementById('input-user').placeholder='admin@puertaapuerta.com';
+    document.getElementById('btn-register').style.display='none';
+  }
+}
+
+function showError(msg){
+  const el=document.getElementById('error-msg');
+  el.textContent=msg;el.style.display='block';
+  document.getElementById('success-msg').style.display='none';
+}
+
+function showSuccess(msg){
+  const el=document.getElementById('success-msg');
+  el.textContent=msg;el.style.display='block';
+  document.getElementById('error-msg').style.display='none';
+}
+
+async function login(){
+  const email=document.getElementById('input-user').value.trim();
+  const pass=document.getElementById('input-pass').value;
+  const btn=document.getElementById('btn-login');
+
+  if(!email||!pass){showError('Completá todos los campos.');return;}
+
+  // Validar que admin solo pueda entrar con el email correcto
+  if(role==='admin' && email!==ADMIN_EMAIL){
+    showError('No tenés permisos de administrador.');return;
+  }
+
+  btn.disabled=true;btn.textContent='Ingresando...';
+
+  try {
+    const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error) throw error;
+
+    // Guardar rol en localStorage
+    localStorage.setItem('pap_role', role);
+    localStorage.setItem('pap_email', email);
+
+    showSuccess('✅ Ingreso exitoso. Redirigiendo...');
+
+    setTimeout(()=>{
+      if(role==='admin') window.location.href='admin.html';
+      else if(role==='cadete') window.location.href='cadete.html';
+      else window.location.href='comercio.html';
+    }, 1000);
+
+  } catch(e) {
+    if(e.message.includes('Invalid login')||e.message.includes('invalid')){
+      showError('Email o contraseña incorrectos. Verificá tus datos.');
+    } else if(e.message.includes('Email not confirmed')){
+      showError('Confirmá tu email antes de ingresar. Revisá tu casilla.');
+    } else {
+      showError('Error al ingresar. Intentá de nuevo.');
+    }
+    btn.disabled=false;btn.textContent='Ingresar';
+  }
+}
+
+function irARegistro(){
+  if(role==='cadete') window.location.href='registro-cadete.html';
+  else window.location.href='registro-comercio.html';
+}
+
+async function olvideClave(){
+  const email=document.getElementById('input-user').value.trim();
+  if(!email){showError('Escribí tu email primero.');return;}
+  try{
+    await sb.auth.resetPasswordForEmail(email);
+    showSuccess('Te enviamos un email para restablecer tu contraseña.');
+  }catch(e){showError('Error al enviar el email. Verificá la dirección.');}
+}
+
+// Enter para login
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+
+// Verificar si ya hay sesión activa
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session){
+    const r=localStorage.getItem('pap_role')||'comercio';
+    if(r==='admin') window.location.href='admin.html';
+    else if(r==='cadete') window.location.href='cadete.html';
+    else window.location.href='comercio.html';
+  }
+});
+</script>
+</body>
+</html>

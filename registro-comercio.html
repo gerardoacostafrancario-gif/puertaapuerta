@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Puerta a Puerta — Registrar comercio</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f5f5f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 0;}
+.container{width:100%;max-width:420px;padding:20px;}
+.logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.logo-box{width:44px;height:44px;border-radius:12px;background:#FF6B35;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.app-name{font-size:18px;font-weight:900;color:#111;}
+.app-tag{font-size:11px;color:#888;}
+.card{background:#fff;border-radius:20px;padding:24px;border:0.5px solid #eee;}
+.card-title{font-size:18px;font-weight:700;color:#111;margin-bottom:4px;}
+.card-sub{font-size:13px;color:#888;margin-bottom:20px;line-height:1.5;}
+.sec-label{font-size:11px;font-weight:700;color:#FF6B35;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 10px;}
+.fg{margin-bottom:12px;}
+.fl{font-size:12px;font-weight:600;color:#555;margin-bottom:5px;display:block;}
+.fi{width:100%;border:1.5px solid #eee;border-radius:10px;padding:10px 12px;font-size:14px;color:#111;outline:none;}
+.fi:focus{border-color:#FF6B35;}
+.fr{display:flex;gap:10px;}
+.fr .fg{flex:1;}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;}
+.cat-opt{border:1.5px solid #eee;border-radius:10px;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;color:#555;cursor:pointer;transition:.15s;}
+.cat-opt.sel{border-color:#FF6B35;color:#FF6B35;background:#FFF3E0;}
+.cat-icon{font-size:20px;margin-bottom:4px;}
+.gratis-box{background:#E8F5E9;border-radius:12px;padding:12px 14px;margin:16px 0;font-size:12px;color:#2E7D32;line-height:1.6;}
+.btn-reg{width:100%;background:#FF6B35;color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+.btn-reg:disabled{opacity:.5;cursor:not-allowed;}
+.btn-back{width:100%;background:#f5f5f5;color:#555;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
+.error-msg{background:#FFEBEE;color:#B71C1C;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+.success-card{background:#fff;border-radius:20px;padding:40px 24px;border:0.5px solid #eee;text-align:center;display:none;}
+.success-icon{font-size:56px;margin-bottom:16px;}
+.success-title{font-size:20px;font-weight:700;color:#111;margin-bottom:8px;}
+.success-sub{font-size:13px;color:#888;line-height:1.7;margin-bottom:24px;}
+.btn-ir{display:inline-block;background:#FF6B35;color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-wrap">
+    <div class="logo-box">
+      <svg width="26" height="26" viewBox="0 0 90 90" fill="none">
+        <path d="M10 36 L45 18 L80 36" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="36" width="30" height="46" rx="4" fill="#fff" opacity=".9"/>
+        <rect x="48" y="36" width="30" height="46" rx="4" fill="#fff"/>
+      </svg>
+    </div>
+    <div><div class="app-name">Puerta a Puerta</div><div class="app-tag">Registrar mi comercio</div></div>
+  </div>
+
+  <div class="card" id="form-card">
+    <div class="card-title">Sumá tu comercio</div>
+    <div class="card-sub">60 días gratis, sin tarjeta. Solo pagás cuando vendas.</div>
+
+    <div class="sec-label">Datos del comercio</div>
+    <div class="fg"><label class="fl">Nombre del comercio</label><input class="fi" id="r-nombre" type="text" placeholder="Ej: La Piola Pizzería"/></div>
+    <div class="fg">
+      <label class="fl">Categoría</label>
+      <div class="cat-grid">
+        <div class="cat-opt" onclick="selCat(this,'comida')"><div class="cat-icon">🍕</div>Comida</div>
+        <div class="cat-opt" onclick="selCat(this,'carniceria')"><div class="cat-icon">🥩</div>Carnicería</div>
+        <div class="cat-opt" onclick="selCat(this,'farmacia')"><div class="cat-icon">💊</div>Farmacia</div>
+        <div class="cat-opt" onclick="selCat(this,'almacen')"><div class="cat-icon">🛒</div>Almacén</div>
+        <div class="cat-opt" onclick="selCat(this,'verduleria')"><div class="cat-icon">🥦</div>Verdulería</div>
+        <div class="cat-opt" onclick="selCat(this,'panaderia')"><div class="cat-icon">🍞</div>Panadería</div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Dirección del local</label><input class="fi" id="r-dir" type="text" placeholder="Ej: Av. Belgrano 234, Santiago del Estero"/></div>
+    <div class="fg"><label class="fl">Ciudad / Provincia</label><input class="fi" id="r-ciudad" type="text" placeholder="Ej: Santiago del Estero"/></div>
+    <div class="fg"><label class="fl">Teléfono de contacto</label><input class="fi" id="r-tel" type="tel" placeholder="Ej: 3854123456"/></div>
+
+    <div class="sec-label">Tu cuenta de acceso</div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="r-email" type="email" placeholder="tucorreo@gmail.com"/></div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Contraseña</label><input class="fi" id="r-pass" type="password" placeholder="Mínimo 6 caracteres"/></div>
+      <div class="fg"><label class="fl">Repetir contraseña</label><input class="fi" id="r-pass2" type="password" placeholder="Repetir"/></div>
+    </div>
+
+    <div class="gratis-box">
+      ✅ <strong>60 días completamente gratis.</strong> Después pagás solo el 12% de comisión sobre lo que vendas. Sin abono mensual, sin costos fijos.
+    </div>
+
+    <button class="btn-reg" id="btn-reg" onclick="registrar()">Registrar mi comercio gratis</button>
+    <div class="error-msg" id="err"></div>
+    <button class="btn-back" onclick="window.location.href='login.html'">← Ya tengo cuenta</button>
+  </div>
+
+  <div class="success-card" id="success-card">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">¡Tu comercio está listo!</div>
+    <div class="success-sub">Ya podés empezar a recibir pedidos.<br/>Ingresá a tu panel para cargar tu menú y configurar tu local.</div>
+    <a class="btn-ir" href="comercio.html">Ir a mi panel →</a>
+  </div>
+
+</div>
+
+<script>
+const SU='https://fmqlpgerqdiplnvjjarl.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcWxwZ2VycWRpcGxudmpqYXJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MTkwNTYsImV4cCI6MjA5MDQ5NTA1Nn0.r1X4NSX8t-v9EeJQ-eK9DVslIWkpo2_UCn-oRy6k--w';
+const sb=supabase.createClient(SU,SK);
+let catSel='';
+
+function selCat(el,cat){
+  document.querySelectorAll('.cat-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');catSel=cat;
+}
+
+function showErr(msg){const e=document.getElementById('err');e.textContent=msg;e.style.display='block';}
+
+async function registrar(){
+  const nombre=document.getElementById('r-nombre').value.trim();
+  const dir=document.getElementById('r-dir').value.trim();
+  const ciudad=document.getElementById('r-ciudad').value.trim();
+  const tel=document.getElementById('r-tel').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const pass=document.getElementById('r-pass').value;
+  const pass2=document.getElementById('r-pass2').value;
+
+  if(!nombre||!catSel||!dir||!email||!pass){showErr('Completá todos los campos obligatorios.');return;}
+  if(pass!==pass2){showErr('Las contraseñas no coinciden.');return;}
+  if(pass.length<6){showErr('La contraseña debe tener al menos 6 caracteres.');return;}
+
+  const btn=document.getElementById('btn-reg');
+  btn.disabled=true;btn.textContent='Registrando...';
+
+  try {
+    // 1. Crear usuario en Supabase Auth
+    const {data:authData, error:authErr}=await sb.auth.signUp({email, password:pass});
+    if(authErr) throw authErr;
+
+    // 2. Crear comercio en la tabla
+    const {error:comErr}=await sb.from('comercios').insert([{
+      nombre, categoria:catSel, direccion:dir,
+      telefono:tel, email,
+      provincia:ciudad||'Santiago del Estero',
+      abierto_ahora:true, activo:true,
+      rating:5.0, total_pedidos:0,
+      tipo_delivery:'hibrido',
+      comision_nortpi:12,
+    }]);
+    if(comErr) throw comErr;
+
+    // 3. Guardar rol
+    localStorage.setItem('pap_role','comercio');
+    localStorage.setItem('pap_email',email);
+
+    // 4. Mostrar éxito
+    document.getElementById('form-card').style.display='none';
+    document.getElementById('success-card').style.display='block';
+
+  } catch(e){
+    if(e.message.includes('already registered')){
+      showErr('Este email ya está registrado. Ingresá con tu cuenta.');
+    } else {
+      showErr('Error al registrar. Intentá de nuevo.');
+    }
+    btn.disabled=false;btn.textContent='Registrar mi comercio gratis';
+  }
+}
+</script>
+</body>
+</html>

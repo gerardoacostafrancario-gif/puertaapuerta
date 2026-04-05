@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Puerta a Puerta — Pagar</title>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f5f5f5;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.container{width:100%;max-width:420px;padding:20px;}
+.logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.logo-box{width:40px;height:40px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.app-name{font-size:17px;font-weight:900;color:#111;}
+.card{background:#fff;border-radius:20px;padding:24px;border:0.5px solid #eee;margin-bottom:12px;}
+.card-title{font-size:15px;font-weight:700;color:#111;margin-bottom:14px;}
+.resumen-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #f5f5f5;color:#555;}
+.resumen-row:last-child{border-bottom:none;}
+.resumen-total{display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:#111;padding:12px 0 0;border-top:2px solid #111;margin-top:6px;}
+.loading{text-align:center;padding:30px;}
+.loading-spinner{width:36px;height:36px;border:3px solid #f0f0f0;border-top:3px solid #FF6B35;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:#888;}
+.btn-back{width:100%;background:#f5f5f5;color:#555;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
+.error-box{background:#FFEBEE;color:#B71C1C;border-radius:12px;padding:14px;font-size:13px;text-align:center;line-height:1.6;}
+.success-box{background:#E8F5E9;color:#2E7D32;border-radius:12px;padding:20px;font-size:14px;text-align:center;line-height:1.7;}
+.success-icon{font-size:48px;margin-bottom:12px;}
+.success-title{font-size:18px;font-weight:700;margin-bottom:6px;}
+.btn-ver{display:inline-block;background:#FF6B35;color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-wrap">
+    <div class="logo-box">
+      <svg width="24" height="24" viewBox="0 0 90 90" fill="none">
+        <path d="M10 36 L45 18 L80 36" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="36" width="30" height="46" rx="4" fill="#fff" opacity=".9"/>
+        <rect x="48" y="36" width="30" height="46" rx="4" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="app-name">Puerta a Puerta</div>
+  </div>
+
+  <!-- Estado: cargando -->
+  <div class="card" id="estado-loading">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Preparando tu pago...</div>
+    </div>
+  </div>
+
+  <!-- Estado: resumen + pago -->
+  <div id="estado-pago" style="display:none;">
+    <div class="card">
+      <div class="card-title">Resumen de tu pedido</div>
+      <div id="items-lista"></div>
+      <div class="resumen-total">
+        <span>Total a pagar</span>
+        <span id="total-display">$0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pagá con MercadoPago</div>
+      <div id="mp-button"></div>
+    </div>
+
+    <button class="btn-back" onclick="window.history.back()">← Volver al carrito</button>
+  </div>
+
+  <!-- Estado: éxito -->
+  <div class="card" id="estado-exito" style="display:none;">
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">¡Pago exitoso!</div>
+      Tu pedido fue confirmado y el comercio ya está preparándolo.<br/>
+      Podés seguir el estado en tiempo real.
+      <br/>
+      <a class="btn-ver" href="index.html">Ver mis pedidos</a>
+    </div>
+  </div>
+
+  <!-- Estado: error -->
+  <div class="card" id="estado-error" style="display:none;">
+    <div class="error-box">
+      <div style="font-size:32px;margin-bottom:10px;">⚠️</div>
+      <div style="font-weight:700;margin-bottom:6px;">Hubo un problema con el pago</div>
+      <div id="error-msg">Intentá de nuevo o elegí otro método de pago.</div>
+    </div>
+    <button class="btn-back" onclick="window.history.back()" style="margin-top:12px;">← Volver e intentar de nuevo</button>
+  </div>
+
+</div>
+
+<script>
+const MP_PUBLIC_KEY = 'APP_USR-7bad20c6-911f-4a8f-a4bb-a5bf5f67eaf1';
+const BASE_URL = 'https://puertaapuerta.vercel.app';
+
+// Leer parámetros de la URL
+const params = new URLSearchParams(window.location.search);
+const status = params.get('status') || params.get('collection_status');
+const pedidoId = params.get('pedido_id') || localStorage.getItem('pap_pedido_actual');
+
+// Manejar retorno de MP
+if(status === 'approved') {
+  mostrarExito();
+} else if(status === 'failure' || status === 'rejected') {
+  mostrarError('Tu pago fue rechazado. Intentá con otro medio de pago.');
+} else if(status === 'pending') {
+  mostrarError('Tu pago está pendiente de acreditación. Te avisamos cuando se confirme.');
+} else {
+  // Mostrar checkout normal
+  iniciarPago();
+}
+
+function mostrarExito(){
+  document.getElementById('estado-loading').style.display='none';
+  document.getElementById('estado-exito').style.display='block';
+}
+
+function mostrarError(msg){
+  document.getElementById('estado-loading').style.display='none';
+  document.getElementById('estado-error').style.display='block';
+  if(msg) document.getElementById('error-msg').textContent=msg;
+}
+
+async function iniciarPago(){
+  try {
+    // Obtener datos del pedido desde localStorage
+    const pedidoData = JSON.parse(localStorage.getItem('pap_pedido_pago') || '{}');
+    const items = pedidoData.items || [{title:'Pedido Puerta a Puerta', quantity:1, unit_price:1000}];
+    const total = pedidoData.total || 1000;
+    const comercioNombre = pedidoData.comercio || 'Comercio';
+
+    // Mostrar resumen
+    document.getElementById('items-lista').innerHTML = items.map(i=>
+      `<div class="resumen-row"><span>${i.quantity||1}x ${i.nombre||i.title}</span><span>$${Number((i.precio||i.unit_price||0)*(i.quantity||i.qty||1)).toLocaleString('es-AR')}</span></div>`
+    ).join('') +
+    `<div class="resumen-row"><span>Envío</span><span>$${Number(pedidoData.envio||800).toLocaleString('es-AR')}</span></div>`;
+    document.getElementById('total-display').textContent = `$${Number(total).toLocaleString('es-AR')}`;
+
+    // Crear preferencia de pago via MP
+    const preference = {
+      items: items.map(i=>({
+        title: i.nombre || i.title || 'Producto',
+        quantity: parseInt(i.quantity || i.qty || 1),
+        unit_price: parseFloat(i.precio || i.unit_price || 0),
+        currency_id: 'ARS'
+      })),
+      back_urls: {
+        success: `${BASE_URL}/pago.html?status=approved&pedido_id=${pedidoId||''}`,
+        failure: `${BASE_URL}/pago.html?status=failure`,
+        pending: `${BASE_URL}/pago.html?status=pending`,
+      },
+      auto_return: 'approved',
+      statement_descriptor: 'PUERTA A PUERTA',
+      external_reference: pedidoId || Date.now().toString(),
+    };
+
+    // Llamar a la API de MP para crear la preferencia
+    const resp = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer APP_USR-5574134103320398-040510-f136a745dc822a801c81ca4893b43e1e-3313856142`
+      },
+      body: JSON.stringify(preference)
+    });
+
+    if(!resp.ok) throw new Error('Error al crear preferencia');
+    const data = await resp.json();
+
+    // Mostrar botón de MP
+    document.getElementById('estado-loading').style.display='none';
+    document.getElementById('estado-pago').style.display='block';
+
+    const mp = new MercadoPago(MP_PUBLIC_KEY, {locale:'es-AR'});
+    mp.bricks().create('wallet', 'mp-button', {
+      initialization: { preferenceId: data.id },
+      customization: {
+        texts: { action: 'pay', valueProp: 'smart_option' },
+        visual: { buttonBackground: 'default', borderRadius: '12px' }
+      },
+      callbacks: {
+        onError: () => mostrarError('Error al cargar el botón de pago.')
+      }
+    });
+
+  } catch(e) {
+    mostrarError('No pudimos conectar con MercadoPago. Intentá de nuevo.');
+  }
+}
+</script>
+</body>
+</html>

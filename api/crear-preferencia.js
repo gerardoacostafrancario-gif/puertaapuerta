@@ -6,14 +6,32 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { items, total, pedido_id, comercio } = req.body;
-    const preference = {
-      items: items.map(i => ({
-        title: i.nombre || i.title || 'Producto',
-        quantity: parseInt(i.qty || i.quantity || 1),
-        unit_price: parseFloat(i.precio || i.unit_price || 0),
+    const body = req.body || {};
+    const { items, total, pedido_id, comercio } = body;
+
+    let mpItems = [];
+    if (items && Array.isArray(items) && items.length > 0) {
+      mpItems = items
+        .filter(i => (i.nombre || i.title) && parseFloat(i.precio || i.unit_price || 0) > 0)
+        .map(i => ({
+          title: String(i.nombre || i.title || 'Producto').slice(0, 256),
+          quantity: Math.max(1, parseInt(i.qty || i.quantity || 1)),
+          unit_price: parseFloat(i.precio || i.unit_price || 0),
+          currency_id: 'ARS'
+        }));
+    }
+
+    if (mpItems.length === 0) {
+      mpItems = [{
+        title: `Pedido ${comercio || 'Puerta a Puerta'}`,
+        quantity: 1,
+        unit_price: parseFloat(total) || 1000,
         currency_id: 'ARS'
-      })),
+      }];
+    }
+
+    const preference = {
+      items: mpItems,
       back_urls: {
         success: 'https://puertaapuerta.vercel.app/pago.html?status=approved',
         failure: 'https://puertaapuerta.vercel.app/pago.html?status=failure',
@@ -21,7 +39,7 @@ export default async function handler(req, res) {
       },
       auto_return: 'approved',
       statement_descriptor: 'PUERTA A PUERTA',
-      external_reference: pedido_id || Date.now().toString(),
+      external_reference: String(pedido_id || Date.now()),
     };
 
     const resp = await fetch('https://api.mercadopago.com/checkout/preferences', {
@@ -34,9 +52,10 @@ export default async function handler(req, res) {
     });
 
     const data = await resp.json();
-    if (!resp.ok) throw new Error(data.message || 'Error MP');
-    res.status(200).json({ id: data.id, init_point: data.init_point });
+    if (!resp.ok) return res.status(500).json({ error: data.message || 'Error MP', detail: data });
+    return res.status(200).json({ id: data.id, init_point: data.init_point });
+
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 }

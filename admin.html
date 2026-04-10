@@ -434,7 +434,16 @@ document.getElementById('cfg-cad').addEventListener('input',function(){
 });
 
 setInterval(cargarTodo,30000);
-cargarTodo();
+
+// PROTECCIÓN — solo admins
+const ADMINS=['gerardoacostafrancario@gmail.com','j.p.torrilla7@hotmail.com'];
+sb.auth.getSession().then(({data:{session}}) => {
+  if(!session || !ADMINS.includes(session.user.email)) {
+    window.location.href = '/admin-acceso.html';
+  } else {
+    cargarTodo();
+  }
+});
 </script>
 </body>
 </html>

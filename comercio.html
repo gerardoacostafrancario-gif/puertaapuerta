@@ -371,7 +371,15 @@ async function guardarCfg(){
 }
 
 setInterval(cargarPeds,30000);
-init();
+
+// PROTECCIÓN — verificar sesión activa
+sb.auth.getSession().then(({data:{session}}) => {
+  if(!session) {
+    window.location.href = '/login.html';
+  } else {
+    init();
+  }
+});
 
 function conectarMP(){
   const CLIENT_ID = '3886989011728021';

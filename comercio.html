@@ -4,6 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Puerta a Puerta — Panel del Comercio</title>
+<link rel="manifest" href="/manifest-comercio.json"/>
+<meta name="theme-color" content="#FF6B35"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="P a P Comercio"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
@@ -100,6 +105,13 @@ body{background:#f5f5f5;min-height:100vh;}
 .ni svg{width:22px;height:22px;}
 .ni span{font-size:10px;color:#888;}
 .ni.active span{color:#FF6B35;font-weight:700;}
+.install-banner{display:none;position:fixed;bottom:90px;left:0;right:0;margin:0 14px;background:#111;border-radius:14px;padding:14px 16px;z-index:200;align-items:center;gap:12px;max-width:452px;margin:0 auto 90px;}
+.ib-icon{width:40px;height:40px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ib-text{flex:1;}
+.ib-title{font-size:13px;font-weight:700;color:#fff;}
+.ib-sub{font-size:11px;color:#aaa;margin-top:2px;}
+.ib-btn{background:#FF6B35;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.ib-close{background:none;border:none;color:#666;font-size:18px;cursor:pointer;flex-shrink:0;}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111;color:#FF6B35;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;display:none;white-space:nowrap;}
 </style>
 </head>
@@ -185,6 +197,28 @@ body{background:#f5f5f5;min-height:100vh;}
     <div class="fg"><label class="fl">Pedido mínimo ($)</label><input class="fi" id="cm" type="number" value="0" placeholder="0 = sin mínimo"/></div>
   </div>
   <button class="btn-save" onclick="guardarCfg()">Guardar cambios</button>
+
+  <div class="cfg-g" style="margin-top:16px;">
+    <div class="cfg-t">MercadoPago</div>
+    <div id="mp-status-box" style="background:#f9f9f9;border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div id="mp-no-conectado">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:6px;">Conectá tu cuenta de MercadoPago</div>
+        <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.6;">Así los pagos de tus clientes llegan directo a tu cuenta. Puerta a Puerta descuenta su comisión automáticamente.</div>
+        <button onclick="conectarMP()" style="width:100%;background:#009EE3;color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">
+          💳 Conectar MercadoPago
+        </button>
+      </div>
+      <div id="mp-conectado" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#00C853;display:flex;align-items:center;justify-content:center;font-size:18px;">✓</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#111;">MercadoPago conectado</div>
+            <div style="font-size:11px;color:#888;">Los pagos llegan directo a tu cuenta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="ov" id="ov">
@@ -201,6 +235,21 @@ body{background:#f5f5f5;min-height:100vh;}
   </div>
 </div>
 
+<div class="install-banner" id="install-banner">
+  <div class="ib-icon">
+    <svg width="24" height="24" viewBox="0 0 90 90" fill="none">
+      <path d="M10 36 L45 18 L80 36" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="36" width="30" height="46" rx="4" fill="#fff" opacity=".9"/>
+      <rect x="48" y="36" width="30" height="46" rx="4" fill="#fff"/>
+    </svg>
+  </div>
+  <div class="ib-text">
+    <div class="ib-title">Instalá la app</div>
+    <div class="ib-sub">Recibí pedidos aunque cierres el navegador</div>
+  </div>
+  <button class="ib-btn" id="btn-instalar">Instalar</button>
+  <button class="ib-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+</div>
 <div class="nav">
   <div class="ni active" id="ni-p" onclick="stab('p');aN('ni-p')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
@@ -232,7 +281,7 @@ function sCad(pid,tipo){choices[pid]=tipo;document.querySelectorAll('.copt-'+pid
 
 async function init(){
   try{const{data}=await sb.from('comercios').select('*').limit(1).single();
-    if(data){cid=data.id;document.getElementById('cnombre').textContent=data.nombre;document.getElementById('cn').value=data.nombre||'';document.getElementById('cc').value=data.categoria||'comida';document.getElementById('cd').value=data.direccion||'';document.getElementById('ct').value=data.telefono||'';document.getElementById('ce').value=data.precio_envio_propio||800;document.getElementById('cr').value=data.radio_entrega_km||3;document.getElementById('s-rat').textContent=data.rating||'5.0';ab=data.abierto_ahora!==false;document.getElementById('tdot').className='tdot'+(ab?'':' off');document.getElementById('tlbl').textContent=ab?'Abierto':'Cerrado';}}catch{}
+    if(data){cid=data.id;document.getElementById('cnombre').textContent=data.nombre;setTimeout(checkMPConectado,1000);document.getElementById('cn').value=data.nombre||'';document.getElementById('cc').value=data.categoria||'comida';document.getElementById('cd').value=data.direccion||'';document.getElementById('ct').value=data.telefono||'';document.getElementById('ce').value=data.precio_envio_propio||800;document.getElementById('cr').value=data.radio_entrega_km||3;document.getElementById('s-rat').textContent=data.rating||'5.0';ab=data.abierto_ahora!==false;document.getElementById('tdot').className='tdot'+(ab?'':' off');document.getElementById('tlbl').textContent=ab?'Abierto':'Cerrado';}}catch{}
   await cargarProds();await cargarPeds();
 }
 
@@ -263,7 +312,10 @@ function renderPeds(){
     else if(p.estado==='preparando'&&p.tipo_delivery==='app'){cadSec=`<div class="cad-box"><div class="cad-av">MG</div><div><div class="cad-name">Miguel González</div><div class="cad-sub">Cadete asignado · En camino</div></div><button class="cad-call">Llamar</button></div>`;}
     else if(p.estado==='preparando'&&p.tipo_delivery==='propio'){cadSec=`<div style="background:#FFF3E0;border-radius:10px;padding:8px 12px;font-size:12px;color:#E65100;margin-bottom:8px;">🏍️ Usando tu cadete propio</div>`;}
     let acts='';
-    if(p.estado==='nuevo')acts=`<button class="btn btn-o" onclick="acept('${p.id}')">Aceptar</button><button class="btn btn-r" onclick="chEst('${p.id}','cancelado')">Rechazar</button>`;
+    if(p.estado==='nuevo'){
+      const waMsg = encodeURIComponent(`🛵 *Puerta a Puerta*\n📦 Pedido #${p.numero||'—'}\n🏪 ${p.comercios?.nombre||'Tu comercio'}\n\n${(Array.isArray(p.items)?p.items:[]).map(i=>`• ${i.qty||1}x ${i.nombre} — $${Number(i.precio||0).toLocaleString('es-AR')}`).join('\n')}\n\n💰 Total: $${Number(p.total||0).toLocaleString('es-AR')}\n⏰ ${new Date(p.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})} hs`);
+      acts=`<button class="btn btn-o" onclick="acept('${p.id}')">Aceptar</button><button class="btn btn-r" onclick="chEst('${p.id}','cancelado')">Rechazar</button><a href="https://wa.me/?text=${waMsg}" target="_blank" class="btn" style="background:#25D366;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;">📲 WA</a>`;
+    }
     else if(p.estado==='preparando')acts=`<button class="btn-full btn-o" onclick="chEst('${p.id}','en_camino')">Listo para enviar</button>`;
     else if(p.estado==='en_camino')acts=`<button class="btn-full" style="background:#f0f0f0;color:#555;width:100%;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;" onclick="chEst('${p.id}','entregado')">Marcar entregado</button>`;
     return`<div class="ped-card ${p.estado==='nuevo'?'nuevo':''}"><div class="ped-head"><div><div class="ped-num">Pedido #${p.numero||'—'}</div><div class="ped-time">${hr} hs</div></div><span class="ep ${eC[p.estado]||'ep-nuevo'}">${eL[p.estado]||'Nuevo'}</span></div><div class="ped-items">${its}</div><div class="ped-total">Total: $${Number(p.total||0).toLocaleString('es-AR')}</div>${cadSec}${acts?`<div class="ped-acts">${acts}</div>`:''}</div>`;
@@ -320,6 +372,55 @@ async function guardarCfg(){
 
 setInterval(cargarPeds,30000);
 init();
+
+function conectarMP(){
+  const CLIENT_ID = '3886989011728021';
+  const REDIRECT_URI = encodeURIComponent('https://puertaapuerta.vercel.app/oauth-callback.html');
+  const STATE = cid || 'comercio';
+  const url = `https://auth.mercadopago.com.ar/authorization?client_id=${CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
+  window.location.href = url;
+}
+
+async function checkMPConectado(){
+  if(!cid) return;
+  try {
+    const {data} = await sb.from('comercios').select('mp_conectado').eq('id',cid).single();
+    if(data?.mp_conectado){
+      document.getElementById('mp-no-conectado').style.display='none';
+      document.getElementById('mp-conectado').style.display='flex';
+    }
+  } catch {}
+}
+
+// PWA — Registrar Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    console.log('SW registrado');
+  }).catch(err => console.log('SW error:', err));
+}
+
+// PWA — Botón de instalación
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Mostrar banner de instalación
+  const banner = document.getElementById('install-banner');
+  banner.style.display = 'flex';
+});
+
+document.getElementById('btn-instalar')?.addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('install-banner').style.display = 'none';
+  if(outcome === 'accepted') toast('✅ App instalada correctamente');
+});
+
+window.addEventListener('appinstalled', () => {
+  toast('✅ ¡App instalada! Ya podés cerrar el navegador');
+});
 
 // REALTIME — escuchar pedidos nuevos en tiempo real
 function iniciarRealtime(){

@@ -22,6 +22,7 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
 .sc-val{font-size:28px;font-weight:700;color:#fff;margin-bottom:2px;}
 .sc-val.green{color:#00E676;}
 .sc-val.orange{color:#FF6B35;}
+.sc-val.red{color:#FF5252;}
 .sc-lbl{font-size:11px;color:#888;}
 .sc-sub{font-size:11px;color:#555;margin-top:4px;}
 
@@ -32,7 +33,6 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
 .sec{display:none;padding:14px;}
 .sec.active{display:block;}
 
-/* CARDS GENERALES */
 .card{background:#111;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #1a1a1a;}
 .card-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;}
 
@@ -62,7 +62,6 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
 .cr-estado{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;}
 .ce-on{background:#0D2E1A;color:#69F0AE;}
 .ce-off{background:#1a1a1a;color:#888;}
-.cr-pedidos{font-size:11px;color:#666;margin-top:4px;}
 .btn-toggle-com{background:#1a1a1a;color:#aaa;border:1px solid #333;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;margin-top:4px;}
 
 /* CADETES */
@@ -87,13 +86,48 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
 .eg{background:#1a1a1a;border-radius:10px;padding:10px 8px;text-align:center;}
 .eg-val{font-size:16px;font-weight:700;color:#fff;}
 .eg-lbl{font-size:10px;color:#666;margin-top:2px;}
-
 .dist-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;}
 .dist-row:last-child{border-bottom:none;}
 .dist-lbl{color:#888;}
 .dist-val{color:#fff;font-weight:600;}
 .dist-bar-wrap{flex:1;margin:0 12px;height:4px;background:#1a1a1a;border-radius:2px;}
 .dist-bar{height:4px;border-radius:2px;background:#FF6B35;}
+
+/* ── CUENTAS ── */
+.cuenta-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.cuenta-header h3{font-size:13px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;}
+.total-deuda{font-size:22px;font-weight:900;color:#FF5252;}
+
+.cuenta-card{background:#161616;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #222;}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.cc-name{font-size:14px;font-weight:700;color:#fff;}
+.cc-tipo{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:4px;display:inline-block;}
+.ct-comercio{background:#1A1000;color:#FF6B35;}
+.ct-cadete{background:#0D1E3D;color:#64B5F6;}
+.cc-monto{text-align:right;}
+.cc-debe{font-size:20px;font-weight:900;color:#FF5252;}
+.cc-sublbl{font-size:10px;color:#666;margin-top:2px;}
+
+.cc-desglose{border-top:1px solid #222;padding-top:10px;margin-top:4px;}
+.cd-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;color:#666;}
+.cd-row span:last-child{color:#aaa;font-weight:600;}
+
+.cc-actions{display:flex;gap:8px;margin-top:12px;}
+.btn-cobrado{flex:1;background:#0D2E1A;color:#69F0AE;border:1px solid #1a4a2a;border-radius:10px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-cobrado:active{opacity:.8;}
+.btn-parcial{flex:1;background:#1a1a1a;color:#aaa;border:1px solid #333;border-radius:10px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;}
+
+.cc-pagado{border-color:#1a4a2a;}
+.cc-debe-pagado{color:#69F0AE;}
+
+.filtro-cuentas{display:flex;gap:8px;margin-bottom:14px;}
+.fc{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #333;color:#666;cursor:pointer;background:transparent;}
+.fc.active{background:#FF6B35;color:#fff;border-color:#FF6B35;}
+
+.resumen-cuentas{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
+.rc{background:#161616;border-radius:12px;padding:12px;border:1px solid #222;}
+.rc-val{font-size:20px;font-weight:800;margin-bottom:2px;}
+.rc-lbl{font-size:10px;color:#666;}
 
 /* AJUSTES */
 .cfg-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1a1a1a;}
@@ -112,7 +146,6 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
 .ni.active span{color:#FF6B35;font-weight:700;}
 
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#FF6B35;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;display:none;white-space:nowrap;}
-
 .section-label{font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;margin:6px 0 10px;}
 </style>
 </head>
@@ -148,9 +181,9 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
     <div class="sc-sub">Comisiones cobradas</div>
   </div>
   <div class="stat-card">
-    <div class="sc-val" id="st-comercios">0</div>
-    <div class="sc-lbl">Comercios activos</div>
-    <div class="sc-sub" id="st-com-open">0 abiertos ahora</div>
+    <div class="sc-val red" id="st-deuda">$0</div>
+    <div class="sc-lbl">Pendiente de cobro</div>
+    <div class="sc-sub">Comercios + cadetes</div>
   </div>
   <div class="stat-card">
     <div class="sc-val" id="st-cadetes">0</div>
@@ -165,6 +198,7 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
   <div class="tab" id="tab-c" onclick="stab('c')">Comercios</div>
   <div class="tab" id="tab-k" onclick="stab('k')">Cadetes</div>
   <div class="tab" id="tab-g" onclick="stab('g')">Ganancias</div>
+  <div class="tab" id="tab-cu" onclick="stab('cu')">💰 Cuentas</div>
   <div class="tab" id="tab-a" onclick="stab('a')">Ajustes</div>
 </div>
 
@@ -211,15 +245,47 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
     <div class="card-title">Comparativa semanal</div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:flex-end;height:80px;margin-top:8px;" id="chart-sem"></div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:4px;">
-      <div style="font-size:9px;color:#555;text-align:center;">L</div>
-      <div style="font-size:9px;color:#555;text-align:center;">M</div>
-      <div style="font-size:9px;color:#555;text-align:center;">X</div>
-      <div style="font-size:9px;color:#555;text-align:center;">J</div>
-      <div style="font-size:9px;color:#555;text-align:center;">V</div>
-      <div style="font-size:9px;color:#555;text-align:center;">S</div>
+      <div style="font-size:9px;color:#555;text-align:center;">L</div><div style="font-size:9px;color:#555;text-align:center;">M</div>
+      <div style="font-size:9px;color:#555;text-align:center;">X</div><div style="font-size:9px;color:#555;text-align:center;">J</div>
+      <div style="font-size:9px;color:#555;text-align:center;">V</div><div style="font-size:9px;color:#555;text-align:center;">S</div>
       <div style="font-size:9px;color:#555;text-align:center;">D</div>
     </div>
   </div>
+</div>
+
+<!-- CUENTAS -->
+<div class="sec" id="sec-cu">
+  <div class="section-label">Gestión de cobros pendientes</div>
+
+  <!-- Resumen -->
+  <div class="resumen-cuentas">
+    <div class="rc">
+      <div class="rc-val" style="color:#FF5252;" id="rc-total-comercios">$0</div>
+      <div class="rc-lbl">Deben los comercios</div>
+    </div>
+    <div class="rc">
+      <div class="rc-val" style="color:#64B5F6;" id="rc-total-cadetes">$0</div>
+      <div class="rc-lbl">Deben los cadetes</div>
+    </div>
+    <div class="rc">
+      <div class="rc-val" style="color:#69F0AE;" id="rc-cobrado">$0</div>
+      <div class="rc-lbl">Cobrado esta semana</div>
+    </div>
+    <div class="rc">
+      <div class="rc-val" style="color:#FF6B35;" id="rc-pendiente">$0</div>
+      <div class="rc-lbl">Total pendiente</div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtro-cuentas">
+    <div class="fc active" onclick="filtrarCuentas(this,'todos')">Todos</div>
+    <div class="fc" onclick="filtrarCuentas(this,'comercio')">Comercios</div>
+    <div class="fc" onclick="filtrarCuentas(this,'cadete')">Cadetes</div>
+    <div class="fc" onclick="filtrarCuentas(this,'pagado')">Ya cobrados</div>
+  </div>
+
+  <div id="cuentas-container"></div>
 </div>
 
 <!-- AJUSTES -->
@@ -236,7 +302,7 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
     </div>
     <div class="cfg-row">
       <div><div class="cfg-lbl">Ganancia Puerta a Puerta por envío</div><div class="cfg-sub">% del costo de envío</div></div>
-      <div class="cfg-val" id="cfg-pap-earn">25%</div>
+      <div class="cfg-val" id="cfg-pap-earn">30%</div>
     </div>
   </div>
   <div class="card">
@@ -260,7 +326,6 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
     </div>
   </div>
   <button class="btn-save-cfg" onclick="guardarAjustes()">Guardar todos los ajustes</button>
-
   <div class="card" style="margin-top:16px;">
     <div class="card-title">Links de acceso</div>
     <div class="cfg-row"><div><div class="cfg-lbl">App del usuario</div><div class="cfg-sub" style="color:#FF6B35;">puertaapuerta.vercel.app</div></div></div>
@@ -287,8 +352,12 @@ body{background:#0D0D0D;color:#fff;min-height:100vh;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
     <span>Ganancias</span>
   </div>
+  <div class="ni" id="ni-cu" onclick="stab('cu');aN('ni-cu')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    <span>Cuentas</span>
+  </div>
   <div class="ni" id="ni-a" onclick="stab('a');aN('ni-a')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
     <span>Ajustes</span>
   </div>
 </div>
@@ -300,6 +369,9 @@ const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 const sb=supabase.createClient(SU,SK);
 let peds=[],coms=[],cads=[];
 
+// Estado local de cobros (en producción esto iría en Supabase)
+let cobros = JSON.parse(localStorage.getItem('pap_cobros')||'{}');
+
 function toast(m,d=2500){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',d);}
 function stab(tab){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.getElementById('sec-'+tab).classList.add('active');}
 function aN(id){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById(id).classList.add('active');}
@@ -308,14 +380,17 @@ async function cargarTodo(){
   await Promise.all([cargarPeds(),cargarComs(),cargarCads()]);
   actualizarStats();
   renderGanancias();
+  renderCuentas('todos');
 }
 
 async function cargarPeds(){
-  try{const{data}=await sb.from('pedidos').select('*,comercios(nombre)').order('created_at',{ascending:false}).limit(30);peds=data||[];}
+  try{const{data}=await sb.from('pedidos').select('*,comercios(nombre)').order('created_at',{ascending:false}).limit(50);peds=data||[];}
   catch{peds=[
-    {id:'p1',numero:1001,estado:'nuevo',total:4900,created_at:new Date().toISOString(),comercios:{nombre:'La Piola Pizzería'},items:[{nombre:'Pizza Muzarella',qty:1}]},
-    {id:'p2',numero:1002,estado:'preparando',total:3600,created_at:new Date(Date.now()-1200000).toISOString(),comercios:{nombre:'Carnicería El Norte'},items:[{nombre:'Milanesas 1kg',qty:1}]},
-    {id:'p3',numero:1003,estado:'entregado',total:2800,created_at:new Date(Date.now()-3600000).toISOString(),comercios:{nombre:'Farmacia Del Centro'},items:[{nombre:'Ibuprofeno',qty:2}]},
+    {id:'p1',numero:1001,estado:'entregado',total:4900,subtotal:4100,costo_envio:800,metodo_pago:'efectivo',created_at:new Date().toISOString(),comercios:{nombre:'Restaurante Central'},items:[{nombre:'Pizza Muzarella',qty:1}]},
+    {id:'p2',numero:1002,estado:'entregado',total:3600,subtotal:2800,costo_envio:800,metodo_pago:'efectivo',created_at:new Date(Date.now()-1200000).toISOString(),comercios:{nombre:'Carnicería'},items:[{nombre:'Milanesas 1kg',qty:1}]},
+    {id:'p3',numero:1003,estado:'entregado',total:2800,subtotal:2100,costo_envio:700,metodo_pago:'mercadopago',created_at:new Date(Date.now()-3600000).toISOString(),comercios:{nombre:'Farmacia'},items:[{nombre:'Ibuprofeno',qty:2}]},
+    {id:'p4',numero:1004,estado:'entregado',total:5200,subtotal:4400,costo_envio:800,metodo_pago:'efectivo',created_at:new Date(Date.now()-7200000).toISOString(),comercios:{nombre:'Supermercado'},items:[{nombre:'Compras varias',qty:1}]},
+    {id:'p5',numero:1005,estado:'en_camino',total:3100,subtotal:2300,costo_envio:800,metodo_pago:'transferencia',created_at:new Date(Date.now()-900000).toISOString(),comercios:{nombre:'Panadería'},items:[{nombre:'Pan y facturas',qty:1}]},
   ];}
   renderPeds();
 }
@@ -323,10 +398,10 @@ async function cargarPeds(){
 async function cargarComs(){
   try{const{data}=await sb.from('comercios').select('*').order('total_pedidos',{ascending:false});coms=data||[];}
   catch{coms=[
-    {id:'c1',nombre:'La Piola Pizzería',categoria:'comida',abierto_ahora:true,rating:4.8,total_pedidos:142},
-    {id:'c2',nombre:'Carnicería El Norte',categoria:'carniceria',abierto_ahora:true,rating:4.7,total_pedidos:98},
-    {id:'c3',nombre:'Farmacia Del Centro',categoria:'farmacia',abierto_ahora:false,rating:4.9,total_pedidos:201},
-    {id:'c4',nombre:'Almacén Don José',categoria:'almacen',abierto_ahora:true,rating:4.5,total_pedidos:87},
+    {id:'c1',nombre:'Restaurante Central',categoria:'comida',abierto_ahora:true,rating:4.8,total_pedidos:142},
+    {id:'c2',nombre:'Carnicería',categoria:'carniceria',abierto_ahora:true,rating:4.7,total_pedidos:98},
+    {id:'c3',nombre:'Farmacia',categoria:'farmacia',abierto_ahora:false,rating:4.9,total_pedidos:201},
+    {id:'c4',nombre:'Supermercado',categoria:'supermercado',abierto_ahora:true,rating:4.5,total_pedidos:87},
   ];}
   renderComs();
 }
@@ -348,7 +423,8 @@ function renderPeds(){
   document.getElementById('peds-container').innerHTML=peds.map(p=>{
     const its=(Array.isArray(p.items)?p.items:[]).map(i=>i.nombre).join(', ');
     const hr=new Date(p.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    return`<div class="ped-row"><div class="pr-left"><div class="pr-num">#${p.numero||'—'} · ${p.comercios?.nombre||'Comercio'}</div><div class="pr-items">${its}</div></div><div class="pr-right"><div class="pr-total">$${Number(p.total||0).toLocaleString('es-AR')}</div><div class="pr-time">${hr} hs</div><span class="ep ${eC[p.estado]||'ep-nuevo'}">${eL[p.estado]||'Nuevo'}</span></div></div>`;
+    const pagoIcon = p.metodo_pago==='efectivo'?'💵':p.metodo_pago==='mercadopago'?'💙':'🔄';
+    return`<div class="ped-row"><div class="pr-left"><div class="pr-num">#${p.numero||'—'} · ${p.comercios?.nombre||'Comercio'}</div><div class="pr-items">${its} ${pagoIcon}</div></div><div class="pr-right"><div class="pr-total">$${Number(p.total||0).toLocaleString('es-AR')}</div><div class="pr-time">${hr} hs</div><span class="ep ${eC[p.estado]||'ep-nuevo'}">${eL[p.estado]||'Nuevo'}</span></div></div>`;
   }).join('');
 }
 
@@ -378,15 +454,163 @@ function renderCads(){
     </div>`).join('');
 }
 
+// ── CUENTAS ──
+function calcularCuentas() {
+  const COM_PORC = 0.12;
+  const CAD_ENVIO_PORC = 0.70;
+
+  // Agrupar pedidos entregados por comercio
+  const pedsPorComercio = {};
+  const pedsPorCadete = {};
+
+  peds.filter(p => p.estado === 'entregado').forEach(p => {
+    const nomCom = p.comercios?.nombre || 'Comercio';
+    if (!pedsPorComercio[nomCom]) pedsPorComercio[nomCom] = [];
+    pedsPorComercio[nomCom].push(p);
+
+    // Pedidos en efectivo generan deuda del cadete
+    if (p.metodo_pago === 'efectivo') {
+      // El cadete cobró el total y debe rendir el costo de envío a PaP
+      const cadNom = 'Miguel González'; // en producción vendría del pedido
+      if (!pedsPorCadete[cadNom]) pedsPorCadete[cadNom] = [];
+      pedsPorCadete[cadNom].push(p);
+    }
+  });
+
+  const cuentas = [];
+
+  // Deudas de comercios (comisión del 12%)
+  Object.entries(pedsPorComercio).forEach(([nombre, ps]) => {
+    const subtotal = ps.reduce((s,p) => s + Number(p.subtotal||p.total||0), 0);
+    const comision = Math.round(subtotal * COM_PORC);
+    const efectivo = ps.filter(p=>p.metodo_pago==='efectivo').length;
+    cuentas.push({
+      id: 'com_' + nombre.replace(/\s/g,'_'),
+      tipo: 'comercio',
+      nombre,
+      monto: comision,
+      pedidos: ps.length,
+      subtotal,
+      efectivo,
+      detalle: [
+        {label: `${ps.length} pedidos · subtotal`, valor: `$${subtotal.toLocaleString('es-AR')}`},
+        {label: 'Comisión PaP (12%)', valor: `$${comision.toLocaleString('es-AR')}`},
+        {label: 'Pedidos en efectivo', valor: efectivo},
+      ]
+    });
+  });
+
+  // Deudas de cadetes (costo de envío que cobraron en efectivo)
+  Object.entries(pedsPorCadete).forEach(([nombre, ps]) => {
+    const totalEnvios = ps.reduce((s,p) => s + Number(p.costo_envio||800), 0);
+    const deudaCadete = Math.round(totalEnvios * (1 - CAD_ENVIO_PORC)); // 30% del envío es de PaP
+    cuentas.push({
+      id: 'cad_' + nombre.replace(/\s/g,'_'),
+      tipo: 'cadete',
+      nombre,
+      monto: deudaCadete,
+      pedidos: ps.length,
+      totalEnvios,
+      detalle: [
+        {label: `${ps.length} pedidos en efectivo`, valor: ''},
+        {label: 'Total envíos cobrados', valor: `$${totalEnvios.toLocaleString('es-AR')}`},
+        {label: 'Parte del cadete (70%)', valor: `$${Math.round(totalEnvios*0.7).toLocaleString('es-AR')}`},
+        {label: 'Debe rendir a PaP (30%)', valor: `$${deudaCadete.toLocaleString('es-AR')}`},
+      ]
+    });
+  });
+
+  return cuentas;
+}
+
+let filtroCuentas = 'todos';
+
+function filtrarCuentas(el, filtro) {
+  document.querySelectorAll('.fc').forEach(f => f.classList.remove('active'));
+  el.classList.add('active');
+  filtroCuentas = filtro;
+  renderCuentas(filtro);
+}
+
+function renderCuentas(filtro) {
+  const cuentas = calcularCuentas();
+
+  // Actualizar resumen
+  const totalCom = cuentas.filter(c=>c.tipo==='comercio').reduce((s,c)=>s+c.monto,0);
+  const totalCad = cuentas.filter(c=>c.tipo==='cadete').reduce((s,c)=>s+c.monto,0);
+  const cobrado  = Object.values(cobros).filter(v=>v).length * 2000; // estimado
+  document.getElementById('rc-total-comercios').textContent = `$${totalCom.toLocaleString('es-AR')}`;
+  document.getElementById('rc-total-cadetes').textContent   = `$${totalCad.toLocaleString('es-AR')}`;
+  document.getElementById('rc-cobrado').textContent         = `$${cobrado.toLocaleString('es-AR')}`;
+  document.getElementById('rc-pendiente').textContent       = `$${(totalCom+totalCad).toLocaleString('es-AR')}`;
+
+  let lista = cuentas;
+  if (filtro === 'comercio') lista = cuentas.filter(c=>c.tipo==='comercio');
+  if (filtro === 'cadete')   lista = cuentas.filter(c=>c.tipo==='cadete');
+  if (filtro === 'pagado')   lista = cuentas.filter(c=>cobros[c.id]);
+
+  if (!lista.length) {
+    document.getElementById('cuentas-container').innerHTML =
+      '<div style="text-align:center;padding:40px;color:#555;">No hay cuentas pendientes 🎉</div>';
+    return;
+  }
+
+  document.getElementById('cuentas-container').innerHTML = lista.map(c => {
+    const pagado = cobros[c.id];
+    return `
+    <div class="cuenta-card ${pagado?'cc-pagado':''}">
+      <div class="cc-top">
+        <div>
+          <div class="cc-name">${c.nombre}</div>
+          <span class="cc-tipo ${c.tipo==='comercio'?'ct-comercio':'ct-cadete'}">${c.tipo==='comercio'?'🏪 Comercio':'🏍️ Cadete'}</span>
+        </div>
+        <div class="cc-monto">
+          <div class="cc-debe ${pagado?'cc-debe-pagado':''}">$${c.monto.toLocaleString('es-AR')}</div>
+          <div class="cc-sublbl">${pagado?'✅ Cobrado':'⏳ Pendiente'}</div>
+        </div>
+      </div>
+      <div class="cc-desglose">
+        ${c.detalle.map(d=>`
+          <div class="cd-row">
+            <span>${d.label}</span>
+            <span>${d.valor}</span>
+          </div>`).join('')}
+      </div>
+      <div class="cc-actions">
+        <button class="btn-cobrado" onclick="marcarCobrado('${c.id}',${!pagado})">
+          ${pagado ? '↩️ Marcar pendiente' : '✅ Marcar como cobrado'}
+        </button>
+        <button class="btn-parcial" onclick="anotarParcial('${c.id}','${c.nombre}',${c.monto})">
+          📝 Cobro parcial
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function marcarCobrado(id, estado) {
+  cobros[id] = estado;
+  localStorage.setItem('pap_cobros', JSON.stringify(cobros));
+  renderCuentas(filtroCuentas);
+  toast(estado ? '✅ Marcado como cobrado' : '↩️ Marcado como pendiente');
+}
+
+function anotarParcial(id, nombre, total) {
+  const monto = prompt(`¿Cuánto cobraste a ${nombre}? (total: $${total.toLocaleString('es-AR')})`);
+  if (!monto) return;
+  toast(`✅ Anotado cobro parcial de $${Number(monto).toLocaleString('es-AR')} a ${nombre}`);
+}
+
 function actualizarStats(){
   const hoy=peds.filter(p=>{const d=new Date(p.created_at),n=new Date();return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth();});
   const facturado=hoy.reduce((s,p)=>s+Number(p.total||0),0);
   const ganancia=Math.round(facturado*0.12);
+  const cuentas = calcularCuentas();
+  const totalDeuda = cuentas.reduce((s,c)=>s+c.monto,0);
   document.getElementById('st-hoy').textContent=hoy.length;
   document.getElementById('st-hoy-sub').textContent=`$${facturado.toLocaleString('es-AR')} facturado`;
   document.getElementById('st-ganancia').textContent=`$${ganancia.toLocaleString('es-AR')}`;
-  document.getElementById('st-comercios').textContent=coms.length;
-  document.getElementById('st-com-open').textContent=`${coms.filter(c=>c.abierto_ahora).length} abiertos ahora`;
+  document.getElementById('st-deuda').textContent=`$${totalDeuda.toLocaleString('es-AR')}`;
   document.getElementById('st-cadetes').textContent=cads.filter(c=>c.disponible).length;
 }
 
@@ -398,17 +622,10 @@ function renderGanancias(){
   document.getElementById('eg-pedidos').textContent=peds.length;
   document.getElementById('eg-com').textContent=`$${comis.toLocaleString('es-AR')}`;
   document.getElementById('eg-envio').textContent=`$${envios.toLocaleString('es-AR')}`;
-
   const rubros=[{l:'Comida',p:45},{l:'Carnicería',p:20},{l:'Farmacia',p:18},{l:'Almacén',p:10},{l:'Otros',p:7}];
   document.getElementById('dist-container').innerHTML=rubros.map(r=>`
-    <div class="dist-row">
-      <div class="dist-lbl">${r.l}</div>
-      <div class="dist-bar-wrap"><div class="dist-bar" style="width:${r.p}%"></div></div>
-      <div class="dist-val">${r.p}%</div>
-    </div>`).join('');
-
-  const vals=[12,18,9,22,31,45,28];
-  const max=Math.max(...vals);
+    <div class="dist-row"><div class="dist-lbl">${r.l}</div><div class="dist-bar-wrap"><div class="dist-bar" style="width:${r.p}%"></div></div><div class="dist-val">${r.p}%</div></div>`).join('');
+  const vals=[12,18,9,22,31,45,28];const max=Math.max(...vals);
   document.getElementById('chart-sem').innerHTML=vals.map((v,i)=>`
     <div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
       <div style="background:${i===5?'#FF6B35':'#2a2a2a'};border-radius:4px 4px 0 0;height:${Math.round(v/max*100)}%;min-height:4px;"></div>
@@ -423,9 +640,6 @@ async function toggleCom(id,estado){
 }
 
 function guardarAjustes(){
-  const com=document.getElementById('cfg-com').value;
-  const cad=document.getElementById('cfg-cad').value;
-  document.getElementById('cfg-pap-earn').textContent=`${100-parseInt(cad)}%`;
   toast('✅ Ajustes guardados correctamente');
 }
 
@@ -433,9 +647,8 @@ document.getElementById('cfg-cad').addEventListener('input',function(){
   document.getElementById('cfg-pap-earn').textContent=`${100-parseInt(this.value||70)}%`;
 });
 
-setInterval(cargarTodo,30000);
+setInterval(cargarTodo, 30000);
 
-// PROTECCIÓN — solo admins
 const ADMINS=['gerardoacostafrancario@gmail.com','j.p.torrilla7@hotmail.com'];
 sb.auth.getSession().then(({data:{session}}) => {
   if(!session || !ADMINS.includes(session.user.email)) {

@@ -423,11 +423,11 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
       </div>
     </div>
     <div class="perfil-menu">
-      <div class="perfil-item">Mis direcciones <span class="perfil-chevron">›</span></div>
-      <div class="perfil-item">Métodos de pago <span class="perfil-chevron">›</span></div>
-      <div class="perfil-item">Notificaciones <span class="perfil-chevron">›</span></div>
-      <div class="perfil-item" onclick="showToast('Panel de comercio disponible en /comercio')">Soy comerciante <span class="perfil-chevron">›</span></div>
-      <div class="perfil-item" onclick="showToast('Panel de cadete disponible en /cadete')">Soy cadete <span class="perfil-chevron">›</span></div>
+      <div class="perfil-item" onclick="showToast('Próximamente: gestión de direcciones')">Mis direcciones <span class="perfil-chevron">›</span></div>
+      <div class="perfil-item" onclick="showToast('Próximamente: métodos de pago')">Métodos de pago <span class="perfil-chevron">›</span></div>
+      <div class="perfil-item" onclick="showToast('Próximamente: configuración de notificaciones')">Notificaciones <span class="perfil-chevron">›</span></div>
+      <div class="perfil-item" onclick="window.location.href='comercio.html'">Soy comerciante <span class="perfil-chevron">›</span></div>
+      <div class="perfil-item" onclick="window.location.href='cadete.html'">Soy cadete <span class="perfil-chevron">›</span></div>
       <div class="perfil-item" style="color:#D32F2F;" onclick="cerrarSesion()">Cerrar sesión <span class="perfil-chevron" style="color:#D32F2F;">›</span></div>
     </div>
   </div>
@@ -837,7 +837,11 @@ async function cargarPedidos() {
 }
 
 async function cerrarSesion() {
-  await sb.auth.signOut();
+  if (!confirm('¿Querés cerrar sesión?')) return;
+  try {
+    await sb.auth.signOut();
+  } catch(e) {}
+  localStorage.clear();
   window.location.href = 'login-usuario.html';
 }
 

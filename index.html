@@ -999,19 +999,28 @@ async function obtenerDireccionExacta(lat, lng) {
     const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GMAPS_KEY}&language=es`);
     const data = await res.json();
     if (data.status === 'OK' && data.results.length > 0) {
-      const comps = data.results[0].address_components;
-      const calle = comps.find(c => c.types.includes('route'))?.long_name;
-      const numero = comps.find(c => c.types.includes('street_number'))?.long_name;
-      const barrio = comps.find(c => c.types.includes('locality'))?.long_name;
-      const ciudad = comps.find(c => c.types.includes('administrative_area_level_2'))?.long_name;
-      const provincia = comps.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
-      const partes = [];
-      if (calle && numero) partes.push(`${calle} ${numero}`);
-      else if (calle) partes.push(calle);
-      if (barrio) partes.push(barrio);
-      if (ciudad && ciudad !== barrio) partes.push(`La ${ciudad}`);
-      if (provincia) partes.push(provincia);
-      return partes.join(', ') || 'Mi ubicación';
+      for (const result of data.results) {
+        const c = result.address_components;
+        if (c.some(x => x.types.includes('plus_code'))) continue;
+        const calle = c.find(x => x.types.includes('route'))?.long_name;
+        const numero = c.find(x => x.types.includes('street_number'))?.long_name;
+        const barrio = c.find(x => x.types.includes('locality') || x.types.includes('sublocality'))?.long_name;
+        const ciudad = c.find(x => x.types.includes('administrative_area_level_2'))?.long_name;
+        const provincia = c.find(x => x.types.includes('administrative_area_level_1'))?.long_name;
+        const partes = [];
+        if (calle && numero) partes.push(`${calle} ${numero}`);
+        else if (calle) partes.push(calle);
+        if (barrio && barrio !== ciudad) partes.push(barrio);
+        if (ciudad) partes.push(ciudad);
+        if (provincia && provincia !== ciudad && provincia !== barrio) partes.push(provincia);
+        if (partes.length) return partes.join(', ');
+      }
+      // Fallback
+      const c = data.results[0].address_components;
+      const barrio = c.find(x => x.types.includes('locality') || x.types.includes('sublocality'))?.long_name;
+      const ciudad = c.find(x => x.types.includes('administrative_area_level_2'))?.long_name;
+      const provincia = c.find(x => x.types.includes('administrative_area_level_1'))?.long_name;
+      return [barrio, ciudad, provincia].filter(Boolean).join(', ') || 'Mi ubicación';
     }
   } catch {}
   return ubicacionActual;
@@ -1427,13 +1436,39 @@ async function detectarUbicacion() {
         const data = await res.json();
         if (data.status === 'OK' && data.results.length > 0) {
           const comps = data.results[0].address_components;
-          const barrio = comps.find(c => c.types.includes('locality'))?.long_name;
-          const ciudad = comps.find(c => c.types.includes('administrative_area_level_2'))?.long_name;
-          const provincia = comps.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
+          // Buscar en todos los resultados el más específico sin código Plus
+          let lugar = null;
+          let ciudadFinal = null;
+          let provinciaFinal = null;
+
+          for (const result of data.results) {
+            const c = result.address_components;
+            const tieneCodigoPlus = c.some(x => x.types.includes('plus_code'));
+            if (tieneCodigoPlus) continue;
+            // Tomar el primer resultado sin código Plus
+            const barrio = c.find(x => x.types.includes('locality') || x.types.includes('sublocality') || x.types.includes('neighborhood'))?.long_name;
+            const ciudad = c.find(x => x.types.includes('administrative_area_level_2'))?.long_name;
+            const prov = c.find(x => x.types.includes('administrative_area_level_1'))?.long_name;
+            if (barrio || ciudad) {
+              lugar = barrio;
+              ciudadFinal = ciudad;
+              provinciaFinal = prov;
+              break;
+            }
+          }
+
+          // Si todos tienen código Plus, usar el primero igual
+          if (!lugar && !ciudadFinal) {
+            const c = comps;
+            lugar = c.find(x => x.types.includes('locality') || x.types.includes('sublocality'))?.long_name;
+            ciudadFinal = c.find(x => x.types.includes('administrative_area_level_2'))?.long_name;
+            provinciaFinal = c.find(x => x.types.includes('administrative_area_level_1'))?.long_name;
+          }
+
           const partes = [];
-          if (barrio) partes.push(barrio);
-          if (ciudad && ciudad !== barrio) partes.push(`La ${ciudad}`);
-          if (provincia && provincia !== ciudad) partes.push(provincia);
+          if (lugar && lugar !== ciudadFinal) partes.push(lugar);
+          if (ciudadFinal) partes.push(ciudadFinal);
+          if (provinciaFinal && provinciaFinal !== ciudadFinal && provinciaFinal !== lugar) partes.push(provinciaFinal);
           setUbicacionTexto(partes.join(', ') || 'Mi ubicación');
         } else {
           setUbicacionTexto('Mi ubicación');

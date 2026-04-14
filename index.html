@@ -225,9 +225,9 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
           <div class="logo-tag">Tu pedido, ya mismo.</div>
         </div>
       </div>
-      <div class="addr-btn">
+      <div class="addr-btn" onclick="pedirUbicacion()">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="#FF6B35"><path d="M8 1C5.2 1 3 3.2 3 6c0 4 5 9 5 9s5-5 5-9c0-2.8-2.2-5-5-5zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
-        Santiago del Estero
+        <span id="ubicacion-txt">Detectando...</span>
       </div>
     </div>
     <div class="search-box">
@@ -732,7 +732,7 @@ async function confirmarPedido() {
     total,
     metodo_pago: payMethod,
     estado: 'confirmado',
-    direccion_entrega: 'Santiago del Estero, Argentina',
+    direccion_entrega: ubicacionActual,
     comision_puertaapuerta: Math.round(sub * 0.12),
     pago_cadete: Math.round(800 * 0.7),
   };
@@ -862,6 +862,47 @@ sb.auth.getSession().then(({ data: { session } }) => {
   if (nombreEl) nombreEl.textContent = nombre;
 });
 
+// UBICACIÓN AUTOMÁTICA
+let ubicacionActual = localStorage.getItem('pap_ubicacion') || 'Mi ubicación';
+
+function setUbicacionTexto(txt) {
+  ubicacionActual = txt;
+  localStorage.setItem('pap_ubicacion', txt);
+  document.getElementById('ubicacion-txt').textContent = txt.length > 22 ? txt.slice(0,22)+'…' : txt;
+}
+
+async function detectarUbicacion() {
+  if (!navigator.geolocation) {
+    setUbicacionTexto(localStorage.getItem('pap_ubicacion') || 'Mi ubicación');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      try {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es`);
+        const data = await res.json();
+        const ciudad = data.address?.city || data.address?.town || data.address?.village || data.address?.county || 'Mi ubicación';
+        const provincia = data.address?.state || '';
+        setUbicacionTexto(ciudad + (provincia ? ', ' + provincia : ''));
+      } catch {
+        setUbicacionTexto(localStorage.getItem('pap_ubicacion') || 'Mi ubicación');
+      }
+    },
+    () => {
+      // Sin permiso — mostrar lo guardado o pedir manual
+      const guardada = localStorage.getItem('pap_ubicacion');
+      setUbicacionTexto(guardada || '📍 Actualizar ubicación');
+    },
+    { timeout: 8000, maximumAge: 300000 }
+  );
+}
+
+function pedirUbicacion() {
+  document.getElementById('ubicacion-txt').textContent = 'Detectando...';
+  detectarUbicacion();
+}
+
 // CARRUSEL BANNERS
 let bannerIdx = 0;
 const bannerTotal = 3;
@@ -875,6 +916,7 @@ function moverBanner(idx) {
 setInterval(() => moverBanner(bannerIdx + 1), 4000);
 document.getElementById('hero-banner').addEventListener('click', () => moverBanner(bannerIdx + 1));
 
+detectarUbicacion();
 cargarComercios();
 </script>
 </body>

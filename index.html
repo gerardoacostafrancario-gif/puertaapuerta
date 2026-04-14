@@ -87,7 +87,37 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
 .tag-gr{background:var(--gray-100);color:var(--gray-600);}
 .closed-badge{background:#FFEBEE;color:#B71C1C;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;}
 
-/* ─── DETAIL ─── */
+/* ─── PEDIDO CONFIRMADO ─── */
+.confirmado-screen{display:none;position:fixed;inset:0;z-index:600;background:var(--white);flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
+.confirmado-screen.visible{display:flex;}
+@keyframes pop{0%{transform:scale(0);opacity:0;}60%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.conf-icono{width:100px;height:100px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:52px;animation:pop .5s ease forwards;margin-bottom:24px;}
+.conf-titulo{font-size:26px;font-weight:800;color:var(--black);margin-bottom:8px;animation:fadeUp .4s .3s ease both;}
+.conf-sub{font-size:15px;color:var(--gray-400);line-height:1.6;animation:fadeUp .4s .4s ease both;margin-bottom:32px;}
+.conf-num{background:var(--gray-50);border-radius:var(--radius-lg);padding:16px 24px;margin-bottom:32px;animation:fadeUp .4s .5s ease both;}
+.conf-num-label{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.conf-num-val{font-size:32px;font-weight:900;color:var(--brand);}
+.conf-btn{background:var(--brand);color:#fff;border:none;border-radius:var(--radius-md);padding:16px 40px;font-size:15px;font-weight:800;cursor:pointer;animation:fadeUp .4s .6s ease both;width:100%;}
+
+/* ─── MENÚ MEJORADO ─── */
+.menu-item{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--gray-100);background:var(--white);gap:12px;}
+.menu-item:last-of-type{border-bottom:none;}
+.mi-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0;}
+.mi-img{width:68px;height:68px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--gray-100);}
+.mi-img-emoji{width:68px;height:68px;border-radius:10px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.mi-info{flex:1;min-width:0;}
+.mi-name{font-size:14px;font-weight:700;color:var(--black);}
+.mi-desc{font-size:11px;color:var(--gray-400);margin-top:3px;line-height:1.4;}
+.mi-price{font-size:13px;font-weight:800;color:var(--brand);margin-top:5px;}
+.mi-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.mi-qty-row{display:flex;align-items:center;gap:8px;}
+.mi-qty-n{font-size:14px;font-weight:700;color:var(--black);min-width:18px;text-align:center;}
+
+/* ─── NOTA AL PEDIDO ─── */
+.nota-pedido-sec{padding:14px 18px;background:var(--white);border-top:1px solid var(--gray-100);}
+.nota-pedido-input{width:100%;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;color:var(--black);outline:none;resize:none;font-family:inherit;line-height:1.5;background:var(--gray-50);}
+.nota-pedido-input:focus{border-color:var(--brand);background:#fff;}
 .detail-hdr{background:var(--black);padding:18px 18px 20px;}
 .back{display:flex;align-items:center;gap:6px;color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;width:fit-content;}
 .det-name{font-size:20px;font-weight:800;color:var(--white);margin-bottom:5px;letter-spacing:-.3px;}
@@ -205,6 +235,18 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
 
 <!-- TOAST -->
 <div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
+
+<!-- PANTALLA PEDIDO CONFIRMADO -->
+<div class="confirmado-screen" id="s-confirmado">
+  <div class="conf-icono">🎉</div>
+  <div class="conf-titulo">¡Pedido confirmado!</div>
+  <div class="conf-sub">Tu pedido está siendo preparado.<br>Te avisamos cuando el cadete esté en camino.</div>
+  <div class="conf-num">
+    <div class="conf-num-label">Número de pedido</div>
+    <div class="conf-num-val" id="conf-num-val">#0000</div>
+  </div>
+  <button class="conf-btn" onclick="irAlTracking()">Ver seguimiento en vivo 🛵</button>
+</div>
 
 <!-- HOME -->
 <div class="screen active" id="s-home">
@@ -338,6 +380,10 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
     <div class="det-meta" id="cart-comercio-name"></div>
   </div>
   <div id="cart-list"></div>
+  <div class="nota-pedido-sec">
+    <div class="pay-lbl" style="margin-bottom:8px;">Nota para el comercio</div>
+    <textarea class="nota-pedido-input" id="nota-pedido" rows="2" placeholder="Ej: sin cebolla, bien cocido, tocar timbre..."></textarea>
+  </div>
   <div class="pay-sec">
     <div class="pay-lbl">Método de pago</div>
     <div class="pay-opts">
@@ -644,12 +690,12 @@ function buscar(q) {
 }
 
 const menusFallback = {
-  '1':[{cat:'Pizzas',items:[{nombre:'Muzarella',desc:'Salsa, queso, orégano',precio:2500},{nombre:'Napolitana',desc:'Tomate, albahaca, ajo',precio:2800},{nombre:'Especial de la casa',desc:'Jamón, morrones, aceitunas',precio:3200}]},{cat:'Empanadas',items:[{nombre:'Carne a cuchillo',desc:'Docena',precio:3200},{nombre:'Jamón y queso',desc:'Docena',precio:2900}]}],
-  '2':[{cat:'Vacuno',items:[{nombre:'Milanesas',desc:'Precio por kg',precio:3800},{nombre:'Asado',desc:'Precio por kg',precio:4200},{nombre:'Vacío',desc:'Precio por kg',precio:3600}]},{cat:'Pollo',items:[{nombre:'Pollo entero',desc:'~2kg',precio:2800},{nombre:'Pechuga',desc:'Precio por kg',precio:3200}]}],
-  '3':[{cat:'Medicamentos',items:[{nombre:'Ibuprofeno 400mg x20',desc:'Genérico',precio:1200},{nombre:'Paracetamol 500mg x20',desc:'Genérico',precio:900},{nombre:'Omeprazol 20mg x14',desc:'Genérico',precio:1800}]},{cat:'Cuidado personal',items:[{nombre:'Alcohol en gel 500ml',desc:'Multilac',precio:1500},{nombre:'Barbijos x10',desc:'Trilaminado',precio:800}]}],
-  '4':[{cat:'Fiambres',items:[{nombre:'Queso cremoso 500g',desc:'La Serenísima',precio:2200},{nombre:'Jamón cocido 200g',desc:'Paladini',precio:1800}]},{cat:'Despensa',items:[{nombre:'Yerba Mate 500g',desc:'Playadito',precio:1400},{nombre:'Aceite girasol 1.5L',desc:'Cocinero',precio:2100},{nombre:'Arroz 1kg',desc:'Gallo',precio:900}]}],
-  '5':[{cat:'Verduras',items:[{nombre:'Tomates cherry 500g',desc:'Frescos del día',precio:900},{nombre:'Lechuga criolla',desc:'Por unidad',precio:400},{nombre:'Zapallo 1kg',desc:'Cortado',precio:600}]},{cat:'Frutas',items:[{nombre:'Naranjas 1kg',desc:'Para jugo',precio:700},{nombre:'Bananas 1kg',desc:'Frescas',precio:600}]}],
-  '6':[{cat:'Pan',items:[{nombre:'Pan de mesa 1kg',desc:'Artesanal del día',precio:800},{nombre:'Medialunas x6',desc:'De manteca',precio:900}]},{cat:'Facturas',items:[{nombre:'Facturas surtidas x6',desc:'Con dulce de leche',precio:1200},{nombre:'Torta rogel',desc:'Por porción',precio:700}]}],
+  '1':[{cat:'Pizzas',items:[{nombre:'Muzarella',desc:'Salsa, queso, orégano',precio:2500,emoji:'🍕'},{nombre:'Napolitana',desc:'Tomate, albahaca, ajo',precio:2800,emoji:'🍕'},{nombre:'Especial de la casa',desc:'Jamón, morrones, aceitunas',precio:3200,emoji:'🍕'}]},{cat:'Empanadas',items:[{nombre:'Carne a cuchillo',desc:'Docena',precio:3200,emoji:'🥟'},{nombre:'Jamón y queso',desc:'Docena',precio:2900,emoji:'🥟'}]}],
+  '2':[{cat:'Vacuno',items:[{nombre:'Milanesas',desc:'Precio por kg',precio:3800,emoji:'🥩'},{nombre:'Asado',desc:'Precio por kg',precio:4200,emoji:'🥩'},{nombre:'Vacío',desc:'Precio por kg',precio:3600,emoji:'🥩'}]},{cat:'Pollo',items:[{nombre:'Pollo entero',desc:'~2kg',precio:2800,emoji:'🍗'},{nombre:'Pechuga',desc:'Precio por kg',precio:3200,emoji:'🍗'}]}],
+  '3':[{cat:'Medicamentos',items:[{nombre:'Ibuprofeno 400mg x20',desc:'Genérico',precio:1200,emoji:'💊'},{nombre:'Paracetamol 500mg x20',desc:'Genérico',precio:900,emoji:'💊'},{nombre:'Omeprazol 20mg x14',desc:'Genérico',precio:1800,emoji:'💊'}]},{cat:'Cuidado personal',items:[{nombre:'Alcohol en gel 500ml',desc:'Multilac',precio:1500,emoji:'🧴'},{nombre:'Barbijos x10',desc:'Trilaminado',precio:800,emoji:'😷'}]}],
+  '4':[{cat:'Fiambres',items:[{nombre:'Queso cremoso 500g',desc:'La Serenísima',precio:2200,emoji:'🧀'},{nombre:'Jamón cocido 200g',desc:'Paladini',precio:1800,emoji:'🥩'}]},{cat:'Despensa',items:[{nombre:'Yerba Mate 500g',desc:'Playadito',precio:1400,emoji:'🧉'},{nombre:'Aceite girasol 1.5L',desc:'Cocinero',precio:2100,emoji:'🫙'},{nombre:'Arroz 1kg',desc:'Gallo',precio:900,emoji:'🍚'}]}],
+  '5':[{cat:'Verduras',items:[{nombre:'Tomates cherry 500g',desc:'Frescos del día',precio:900,emoji:'🍅'},{nombre:'Lechuga criolla',desc:'Por unidad',precio:400,emoji:'🥬'},{nombre:'Zapallo 1kg',desc:'Cortado',precio:600,emoji:'🎃'}]},{cat:'Frutas',items:[{nombre:'Naranjas 1kg',desc:'Para jugo',precio:700,emoji:'🍊'},{nombre:'Bananas 1kg',desc:'Frescas',precio:600,emoji:'🍌'}]}],
+  '6':[{cat:'Pan',items:[{nombre:'Pan de mesa 1kg',desc:'Artesanal del día',precio:800,emoji:'🍞'},{nombre:'Medialunas x6',desc:'De manteca',precio:900,emoji:'🥐'}]},{cat:'Facturas',items:[{nombre:'Facturas surtidas x6',desc:'Con dulce de leche',precio:1200,emoji:'🥐'},{nombre:'Torta rogel',desc:'Por porción',precio:700,emoji:'🎂'}]}],
 };
 
 async function abrirComercio(id) {
@@ -683,11 +729,21 @@ async function abrirComercio(id) {
     document.getElementById('menu-container').innerHTML = '<div class="section-card">' + menu.map(cat => `
       <div class="menu-cat-label">${cat.cat}</div>
       ${cat.items.map((p,i) => `
-        <div class="menu-item">
-          <div><div class="mi-name">${p.nombre}</div><div class="mi-desc">${p.desc}</div></div>
+        <div class="menu-item" id="mi-${id}-${i}">
+          <div class="mi-left">
+            <div class="mi-img-emoji">${p.emoji||'🍽️'}</div>
+            <div class="mi-info">
+              <div class="mi-name">${p.nombre}</div>
+              <div class="mi-desc">${p.desc}</div>
+              <div class="mi-price">$${p.precio.toLocaleString('es-AR')}</div>
+            </div>
+          </div>
           <div class="mi-right">
-            <div class="mi-price">$${p.precio.toLocaleString('es-AR')}</div>
-            <button class="add-btn" onclick="addCart('${id}-${i}','${p.nombre}',${p.precio})">+</button>
+            <div class="mi-qty-row" id="qty-row-${id}-${i}" style="display:none;">
+              <button class="add-btn" style="font-size:16px;background:var(--gray-100);color:var(--black);" onclick="cambiarCantMenu('${id}-${i}','${p.nombre}',${p.precio},-1)">−</button>
+              <span class="mi-qty-n" id="qty-n-${id}-${i}">0</span>
+            </div>
+            <button class="add-btn" id="add-${id}-${i}" onclick="addCartMenu('${id}-${i}','${p.nombre}',${p.precio})">+</button>
           </div>
         </div>`).join('')}`).join('') + '</div>';
   }
@@ -696,8 +752,43 @@ async function abrirComercio(id) {
 function addCart(id, nombre, precio) {
   if (!cart[id]) cart[id] = {nombre, precio, qty:0};
   cart[id].qty++;
+  const qtyRow = document.getElementById(`qty-row-${id}`);
+  const qtyN = document.getElementById(`qty-n-${id}`);
+  if (qtyRow) qtyRow.style.display = 'flex';
+  if (qtyN) qtyN.textContent = cart[id].qty;
   actualizarCartFloat();
   showToast('Agregado al carrito');
+}
+
+function addCartMenu(id, nombre, precio) {
+  addCart(id, nombre, precio);
+}
+
+function cambiarCantMenu(id, nombre, precio, delta) {
+  if (!cart[id]) return;
+  cart[id].qty = Math.max(0, cart[id].qty + delta);
+  const qtyRow = document.getElementById(`qty-row-${id}`);
+  const qtyN = document.getElementById(`qty-n-${id}`);
+  if (cart[id].qty === 0) {
+    delete cart[id];
+    if (qtyRow) qtyRow.style.display = 'none';
+    if (qtyN) qtyN.textContent = '0';
+  } else {
+    if (qtyN) qtyN.textContent = cart[id].qty;
+  }
+  actualizarCartFloat();
+}
+
+// ── PANTALLA CONFIRMADO ──
+function mostrarConfirmado(numPedido) {
+  document.getElementById('conf-num-val').textContent = `#${numPedido}`;
+  document.getElementById('s-confirmado').classList.add('visible');
+}
+
+function irAlTracking() {
+  document.getElementById('s-confirmado').classList.remove('visible');
+  iniciarTracking();
+  go('tracking');
 }
 
 function actualizarCartFloat() {
@@ -823,6 +914,7 @@ async function confirmarPedido() {
   btn.textContent = 'Procesando...';
   const sub = items.reduce((s,i) => s+i.precio*i.qty, 0);
   const total = sub + 800;
+  const nota = document.getElementById('nota-pedido')?.value?.trim() || '';
   const pedido = {
     comercio_id: currentComercio?.id,
     items,
@@ -832,6 +924,7 @@ async function confirmarPedido() {
     metodo_pago: payMethod,
     estado: 'confirmado',
     direccion_entrega: getDireccionEntrega(),
+    nota_pedido: nota,
     comision_puertaapuerta: Math.round(sub * 0.12),
     pago_cadete: Math.round(800 * 0.7),
   };
@@ -858,8 +951,8 @@ async function confirmarPedido() {
     return;
   }
 
-  iniciarTracking();
-  go('tracking');
+  // Mostrar pantalla celebratoria antes del tracking
+  mostrarConfirmado(currentPedido?.numero || Math.floor(Math.random()*9000)+1000);
 }
 
 function iniciarTracking() {

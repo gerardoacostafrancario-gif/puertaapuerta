@@ -789,25 +789,20 @@ async function iniciarMapaCarrito() {
       lngEntrega = p.lng();
       const gpsTxt = document.getElementById('dir-gps-txt');
       if (gpsTxt) gpsTxt.textContent = 'Actualizando...';
-      try {
-        const dir = await obtenerDireccionExacta(latEntrega, lngEntrega);
-        if (gpsTxt) gpsTxt.textContent = dir || 'Ubicación seleccionada';
-        if (dir) { ubicacionActual = dir; localStorage.setItem('pap_ubicacion', dir); }
-      } catch {
-        if (gpsTxt) gpsTxt.textContent = 'Ubicación seleccionada';
-      }
+      const dir = await obtenerDireccionDesdePin(latEntrega, lngEntrega);
+      if (gpsTxt) gpsTxt.textContent = dir;
+      ubicacionActual = dir;
+      localStorage.setItem('pap_ubicacion', dir);
       selDireccion('gps');
     };
     markerCarrito.addListener('dragend', actualizarDesdePin);
 
-    // Mostrar dirección inicial debajo del mapa
-    obtenerDireccionExacta(lat, lng).then(dir => {
+    // Mostrar dirección inicial
+    obtenerDireccionDesdePin(lat, lng).then(dir => {
       const gpsTxt = document.getElementById('dir-gps-txt');
-      if (gpsTxt) { gpsTxt.textContent = dir || 'Tu ubicación actual'; }
-      if (dir) { ubicacionActual = dir; localStorage.setItem('pap_ubicacion', dir); }
-    }).catch(() => {
-      const gpsTxt = document.getElementById('dir-gps-txt');
-      if (gpsTxt) gpsTxt.textContent = 'Tu ubicación actual';
+      if (gpsTxt) gpsTxt.textContent = dir;
+      ubicacionActual = dir;
+      localStorage.setItem('pap_ubicacion', dir);
     });
   };
 
@@ -1151,7 +1146,25 @@ function selDireccion(tipo) {
   }
 }
 
-async function obtenerDireccionExacta(lat, lng) {
+async function obtenerDireccionDesdePin(lat, lng) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es&addressdetails=1`);
+    const data = await res.json();
+    const a = data.address || {};
+    const calle = a.road || a.pedestrian || '';
+    const numero = a.house_number || '';
+    const barrio = a.suburb || a.neighbourhood || a.village || a.locality || '';
+    const ciudad = a.city || a.town || a.municipality || '';
+    const provincia = a.state || '';
+    const partes = [];
+    if (calle && numero) partes.push(`${calle} ${numero}`);
+    else if (calle) partes.push(calle);
+    if (barrio && barrio !== ciudad) partes.push(barrio);
+    if (ciudad) partes.push(ciudad);
+    if (provincia && provincia !== ciudad) partes.push(provincia);
+    return partes.join(', ') || 'Ubicación seleccionada';
+  } catch { return 'Ubicación seleccionada'; }
+}
   try {
     const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GMAPS_KEY}&language=es`);
     const data = await res.json();

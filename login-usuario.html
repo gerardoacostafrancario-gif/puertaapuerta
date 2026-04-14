@@ -5,162 +5,107 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Puerta a Puerta — Ingresá</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --brand:#FF6B35;
-  --brand-dark:#E55A27;
-  --black:#0D0D0D;
-  --gray-50:#F8F8F8;
-  --gray-100:#F0F0F0;
-  --gray-200:#E0E0E0;
-  --gray-400:#A0A0A0;
-  --gray-600:#5C5C5C;
-  --white:#FFFFFF;
-  --radius-md:12px;
-  --radius-lg:18px;
-  --radius-xl:24px;
-}
+:root{--brand:#FF6B35;--brand-dark:#E55A27;--black:#0D0D0D;--gray-50:#F8F8F8;--gray-100:#F0F0F0;--gray-200:#E0E0E0;--gray-400:#A0A0A0;--gray-600:#5C5C5C;--white:#FFFFFF;--radius-md:12px;--radius-lg:18px;--radius-xl:24px;}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Plus Jakarta Sans',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-
-body{
-  min-height:100vh;
-  display:flex;
-  align-items:stretch;
-  justify-content:center;
-  background:var(--black);
-  overflow-y:auto;
-  overflow-x:hidden;
-}
-
-/* Fondo con imagen */
-.bg{
-  position:fixed;inset:0;z-index:0;
-  background:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80') center/cover no-repeat;
-  filter:brightness(.35);
-}
-
-/* Contenedor principal */
-.wrap{
-  position:relative;z-index:1;
-  width:100%;max-width:430px;
-  display:flex;flex-direction:column;
-  justify-content:space-between;
-  min-height:100vh;
-  padding:60px 0 0;
-}
-
-/* Top — logo y título */
-.top{
-  padding:0 28px;
-  flex:1;
-  display:flex;flex-direction:column;
-  justify-content:center;
-  padding-bottom:32px;
-}
-.logo-box{
-  width:56px;height:56px;border-radius:16px;
-  background:var(--brand);
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:24px;
-}
+body{min-height:100vh;display:flex;align-items:stretch;justify-content:center;background:var(--black);overflow-y:auto;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;background:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80') center/cover no-repeat;filter:brightness(.35);}
+.wrap{position:relative;z-index:1;width:100%;max-width:430px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:60px 0 0;}
+.top{padding:0 28px;flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:32px;}
+.logo-box{width:56px;height:56px;border-radius:16px;background:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
 .headline{font-size:32px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:12px;letter-spacing:-.5px;}
 .headline span{color:var(--brand);}
 .subline{font-size:15px;color:rgba(255,255,255,.55);font-weight:500;line-height:1.6;}
-
-/* Bottom — card de login */
-.card{
-  background:var(--white);
-  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
-  padding:32px 24px 40px;
-}
-.card-title{font-size:20px;font-weight:800;color:var(--black);margin-bottom:6px;}
-.card-sub{font-size:13px;color:var(--gray-400);margin-bottom:24px;line-height:1.5;font-weight:500;}
-
-/* Botón Google */
-.btn-google{
-  width:100%;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  background:var(--black);
-  color:#fff;
-  border:none;
-  border-radius:var(--radius-md);
-  padding:15px;
-  font-size:15px;font-weight:700;
-  cursor:pointer;
-  transition:.15s;
-  margin-bottom:20px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
+.card{background:var(--white);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:32px 24px 40px;}
+.btn-google{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--black);color:#fff;border:none;border-radius:var(--radius-md);padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;margin-bottom:20px;font-family:'Plus Jakarta Sans',sans-serif;}
 .btn-google:hover{background:#222;}
 .btn-google:active{transform:scale(.98);}
-
-/* Divider */
 .divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .divider-line{flex:1;height:1px;background:var(--gray-200);}
 .divider-text{font-size:12px;color:var(--gray-400);font-weight:600;white-space:nowrap;}
-
-/* Inputs */
 .form-group{margin-bottom:14px;}
 .form-label{font-size:12px;font-weight:700;color:var(--gray-600);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.04em;}
-.form-input{
-  width:100%;
-  border:1.5px solid var(--gray-200);
-  border-radius:var(--radius-md);
-  padding:13px 16px;
-  font-size:14px;color:var(--black);
-  outline:none;transition:.15s;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--gray-50);
-}
+.form-input{width:100%;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);padding:13px 16px;font-size:14px;color:var(--black);outline:none;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif;background:var(--gray-50);}
 .form-input:focus{border-color:var(--brand);background:#fff;}
 .form-input::placeholder{color:var(--gray-400);}
-
-/* Botón email */
-.btn-email{
-  width:100%;
-  background:var(--brand);
-  color:#fff;border:none;
-  border-radius:var(--radius-md);
-  padding:15px;
-  font-size:15px;font-weight:700;
-  cursor:pointer;transition:.15s;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
+.btn-email{width:100%;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-md);padding:15px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif;}
 .btn-email:hover{background:var(--brand-dark);}
 .btn-email:active{transform:scale(.98);}
 .btn-email:disabled{opacity:.45;cursor:not-allowed;}
-
-/* Toggle registro */
-.toggle{
-  text-align:center;margin-top:18px;
-  font-size:13px;color:var(--gray-400);font-weight:500;
-}
+.toggle{text-align:center;margin-top:18px;font-size:13px;color:var(--gray-400);font-weight:500;}
 .toggle a{color:var(--brand);font-weight:700;text-decoration:none;cursor:pointer;}
-
-/* Olvidé clave */
 .forgot{text-align:right;margin-top:6px;}
 .forgot a{font-size:12px;color:var(--brand);text-decoration:none;font-weight:600;}
-
-/* Mensajes */
 .msg{border-radius:var(--radius-md);padding:11px 14px;font-size:13px;margin-top:14px;display:none;font-weight:600;}
 .msg-error{background:#FFEBEE;color:#B71C1C;}
 .msg-ok{background:#E8F5E9;color:#1B5E20;}
-
-/* Tabs registro/login */
 .tabs{display:flex;background:var(--gray-100);border-radius:var(--radius-md);padding:4px;margin-bottom:22px;}
 .tab{flex:1;text-align:center;padding:9px;border-radius:10px;font-size:13px;font-weight:700;color:var(--gray-400);cursor:pointer;transition:.15s;}
 .tab.active{background:#fff;color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+/* PANTALLA DE ROL */
+.rol-screen{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.85);align-items:flex-end;justify-content:center;}
+.rol-screen.visible{display:flex;}
+.rol-card{background:#fff;border-radius:28px 28px 0 0;padding:32px 24px 48px;width:100%;max-width:430px;}
+.rol-title{font-size:22px;font-weight:800;color:var(--black);margin-bottom:8px;text-align:center;}
+.rol-sub{font-size:14px;color:var(--gray-400);margin-bottom:28px;text-align:center;line-height:1.5;}
+.rol-opciones{display:flex;flex-direction:column;gap:12px;}
+.rol-btn{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;border:2px solid var(--gray-200);background:#fff;cursor:pointer;transition:.15s;text-align:left;width:100%;}
+.rol-btn:hover{border-color:var(--brand);background:#FFF8F6;}
+.rol-btn.sel{border-color:var(--brand);background:#FFF3EE;}
+.rol-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ri-user{background:#FFF3EE;}
+.ri-com{background:#EEF3FF;}
+.ri-cad{background:#EEFFF5;}
+.rol-info{flex:1;}
+.rol-name{font-size:15px;font-weight:700;color:var(--black);}
+.rol-desc{font-size:12px;color:var(--gray-400);margin-top:3px;}
+.btn-confirmar-rol{width:100%;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-md);padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-top:20px;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif;}
+.btn-confirmar-rol:disabled{opacity:.4;cursor:not-allowed;}
+.btn-confirmar-rol:active{opacity:.85;}
 </style>
 </head>
 <body>
 
 <div class="bg"></div>
 
+<!-- PANTALLA SELECCIÓN DE ROL -->
+<div class="rol-screen" id="rol-screen">
+  <div class="rol-card">
+    <div class="rol-title">¡Bienvenido! ¿Quién sos?</div>
+    <div class="rol-sub">Elegí tu tipo de cuenta para continuar.<br>Esto no se puede cambiar después.</div>
+    <div class="rol-opciones">
+      <button class="rol-btn" id="rol-usuario" onclick="selRol('usuario')">
+        <div class="rol-icon ri-user">🛍️</div>
+        <div class="rol-info">
+          <div class="rol-name">Usuario</div>
+          <div class="rol-desc">Quiero pedir delivery a domicilio</div>
+        </div>
+      </button>
+      <button class="rol-btn" id="rol-comercio" onclick="selRol('comercio')">
+        <div class="rol-icon ri-com">🏪</div>
+        <div class="rol-info">
+          <div class="rol-name">Comercio</div>
+          <div class="rol-desc">Tengo un negocio y quiero vender</div>
+        </div>
+      </button>
+      <button class="rol-btn" id="rol-cadete" onclick="selRol('cadete')">
+        <div class="rol-icon ri-cad">🏍️</div>
+        <div class="rol-info">
+          <div class="rol-name">Cadete</div>
+          <div class="rol-desc">Quiero repartir y ganar dinero</div>
+        </div>
+      </button>
+    </div>
+    <button class="btn-confirmar-rol" id="btn-confirmar-rol" onclick="confirmarRol()" disabled>
+      Continuar
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN -->
 <div class="wrap">
-  <!-- TOP -->
   <div class="top">
     <div class="logo-box">
       <svg width="32" height="32" viewBox="0 0 90 90" fill="none">
@@ -175,14 +120,12 @@ body{
     <div class="subline">Restaurantes, farmacias, supermercados y más — directo a tu puerta.</div>
   </div>
 
-  <!-- CARD -->
   <div class="card">
     <div class="tabs">
       <div class="tab active" id="tab-login" onclick="setTab('login')">Ingresar</div>
       <div class="tab" id="tab-reg" onclick="setTab('registro')">Registrarme</div>
     </div>
 
-    <!-- Botón Google -->
     <button class="btn-google" onclick="loginGoogle()">
       <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.2 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 29 5 24 5 12.9 5 4 13.9 4 25s8.9 20 20 20c11 0 20-9 20-20 0-1.5-.2-3-.4-4.5z"/><path fill="#FF3D00" d="M6.3 15.4l6.6 4.8C14.7 17.1 19 14 24 14c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 29 5 24 5 16.3 5 9.7 9.2 6.3 15.4z"/><path fill="#4CAF50" d="M24 45c4.9 0 9.3-1.9 12.7-4.9l-5.9-5c-1.8 1.3-4.1 2-6.8 2-5.2 0-9.6-3.5-11.2-8.3l-6.5 5C9.5 40.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l5.9 5C40.8 35.5 44 30.7 44 25c0-1.5-.2-3-.4-4.5z"/></svg>
       Continuar con Google
@@ -194,7 +137,6 @@ body{
       <div class="divider-line"></div>
     </div>
 
-    <!-- Nombre (solo en registro) -->
     <div class="form-group" id="grupo-nombre" style="display:none;">
       <label class="form-label">Nombre completo</label>
       <input class="form-input" id="input-nombre" type="text" placeholder="Juan García"/>
@@ -231,7 +173,10 @@ const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 const sb = supabase.createClient(SU, SK);
 
 let currentTab = 'login';
+let rolSeleccionado = null;
+let sessionActual = null;
 
+// ── TABS ──
 function setTab(tab) {
   currentTab = tab;
   document.getElementById('tab-login').classList.toggle('active', tab==='login');
@@ -244,26 +189,52 @@ function setTab(tab) {
   ocultarMensajes();
 }
 
-function showError(msg) {
-  const el = document.getElementById('msg-error');
-  el.textContent = msg; el.style.display = 'block';
-  document.getElementById('msg-ok').style.display = 'none';
-}
-function showOk(msg) {
-  const el = document.getElementById('msg-ok');
-  el.textContent = msg; el.style.display = 'block';
-  document.getElementById('msg-error').style.display = 'none';
-}
-function ocultarMensajes() {
-  document.getElementById('msg-error').style.display = 'none';
-  document.getElementById('msg-ok').style.display = 'none';
+function showError(msg){const el=document.getElementById('msg-error');el.textContent=msg;el.style.display='block';document.getElementById('msg-ok').style.display='none';}
+function showOk(msg){const el=document.getElementById('msg-ok');el.textContent=msg;el.style.display='block';document.getElementById('msg-error').style.display='none';}
+function ocultarMensajes(){document.getElementById('msg-error').style.display='none';document.getElementById('msg-ok').style.display='none';}
+
+// ── SELECCIÓN DE ROL ──
+function mostrarPantallaRol(){
+  document.getElementById('rol-screen').classList.add('visible');
 }
 
+function selRol(rol){
+  rolSeleccionado = rol;
+  document.querySelectorAll('.rol-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('rol-'+rol).classList.add('sel');
+  document.getElementById('btn-confirmar-rol').disabled = false;
+}
+
+async function confirmarRol(){
+  if (!rolSeleccionado || !sessionActual) return;
+  const btn = document.getElementById('btn-confirmar-rol');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  try {
+    // Guardar rol en metadata del usuario
+    await sb.auth.updateUser({ data: { role: rolSeleccionado } });
+    localStorage.setItem('pap_role', rolSeleccionado);
+  } catch(e) {
+    localStorage.setItem('pap_role', rolSeleccionado);
+  }
+
+  // Redirigir según rol
+  redirigirSegunRol(rolSeleccionado);
+}
+
+function redirigirSegunRol(rol){
+  if (rol === 'comercio') window.location.href = 'comercio.html';
+  else if (rol === 'cadete') window.location.href = 'cadete.html';
+  else window.location.href = 'index.html';
+}
+
+// ── GOOGLE ──
 async function loginGoogle() {
   try {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'https://puertaapuerta.vercel.app/index.html' }
+      options: { redirectTo: 'https://puertaapuerta.vercel.app/login-usuario.html' }
     });
     if (error) throw error;
   } catch(e) {
@@ -271,11 +242,12 @@ async function loginGoogle() {
   }
 }
 
+// ── EMAIL ──
 async function submitForm() {
   const email = document.getElementById('input-email').value.trim();
   const pass  = document.getElementById('input-pass').value;
   const nombre = document.getElementById('input-nombre').value.trim();
-  const btn   = document.getElementById('btn-submit');
+  const btn = document.getElementById('btn-submit');
 
   if (!email || !pass) { showError('Completá todos los campos.'); return; }
   if (currentTab === 'registro' && !nombre) { showError('Escribí tu nombre completo.'); return; }
@@ -286,29 +258,36 @@ async function submitForm() {
 
   try {
     if (currentTab === 'login') {
-      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       if (error) throw error;
-      showOk('✅ Bienvenido de vuelta. Entrando...');
-      setTimeout(() => window.location.href = 'index.html', 1000);
+      sessionActual = data.session;
+      const rol = data.user?.user_metadata?.role || localStorage.getItem('pap_role');
+      if (!rol) {
+        // Primera vez — preguntar rol
+        mostrarPantallaRol();
+      } else {
+        redirigirSegunRol(rol);
+      }
     } else {
-      const { error } = await sb.auth.signUp({
+      const { data, error } = await sb.auth.signUp({
         email, password: pass,
-        options: { data: { full_name: nombre, role: 'usuario' } }
+        options: { data: { full_name: nombre } }
       });
       if (error) throw error;
-      showOk('✅ Cuenta creada. Revisá tu email para confirmarla.');
+      sessionActual = data.session;
+      // Nuevo usuario — preguntar rol
+      mostrarPantallaRol();
     }
   } catch(e) {
     if (e.message.includes('Invalid login') || e.message.includes('invalid')) {
       showError('Email o contraseña incorrectos.');
     } else if (e.message.includes('Email not confirmed')) {
-      showError('Confirmá tu email antes de ingresar. Revisá tu casilla.');
+      showError('Confirmá tu email antes de ingresar.');
     } else if (e.message.includes('already registered')) {
-      showError('Este email ya tiene una cuenta. Ingresá con tu contraseña.');
+      showError('Este email ya tiene cuenta. Ingresá con tu contraseña.');
     } else {
       showError('Algo salió mal. Intentá de nuevo.');
     }
-  } finally {
     btn.disabled = false;
     btn.textContent = currentTab === 'login' ? 'Ingresar' : 'Crear cuenta';
   }
@@ -318,7 +297,7 @@ async function olvideClave() {
   const email = document.getElementById('input-email').value.trim();
   if (!email) { showError('Escribí tu email primero.'); return; }
   try {
-    await sb.auth.resetPasswordForEmail(email, { redirectTo: 'https://puertaapuerta.vercel.app/index.html' });
+    await sb.auth.resetPasswordForEmail(email, { redirectTo: 'https://puertaapuerta.vercel.app/login-usuario.html' });
     showOk('Te enviamos un email para restablecer tu contraseña.');
   } catch(e) {
     showError('Error al enviar el email.');
@@ -327,9 +306,18 @@ async function olvideClave() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter') submitForm(); });
 
-// Si ya hay sesión activa, ir directo al home
+// ── VERIFICAR SESIÓN AL CARGAR ──
 sb.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = 'index.html';
+  if (session) {
+    sessionActual = session;
+    const rol = session.user?.user_metadata?.role || localStorage.getItem('pap_role');
+    if (!rol) {
+      // Usuario sin rol asignado — preguntar
+      mostrarPantallaRol();
+    } else {
+      redirigirSegunRol(rol);
+    }
+  }
 });
 </script>
 </body>

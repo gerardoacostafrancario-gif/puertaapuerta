@@ -739,7 +739,6 @@ let lngEntrega = null;
 async function iniciarMapaCarrito() {
   const div = document.getElementById('mapa-carrito');
   if (!div || !window.google) return;
-  // Obtener ubicación actual
   navigator.geolocation.getCurrentPosition(async (pos) => {
     latEntrega = pos.coords.latitude;
     lngEntrega = pos.coords.longitude;
@@ -751,33 +750,35 @@ async function iniciarMapaCarrito() {
       zoomControl: true,
       styles: [{ featureType: 'poi', stylers: [{ visibility: 'off' }] }]
     });
-    // Pin arrastrable naranja
+    // Pin con palito estilo Google Maps en naranja
     markerCarrito = new google.maps.Marker({
       position: centro,
       map: mapaCarrito,
       draggable: true,
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 14,
-        fillColor: '#FF6B35',
-        fillOpacity: 1,
-        strokeColor: '#fff',
-        strokeWeight: 3,
+        url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+        scaledSize: new google.maps.Size(32, 32),
+        anchor: new google.maps.Point(16, 32),
       },
       title: 'Arrastrá para ajustar'
     });
-    // Al soltar el pin, actualizar dirección
+    // Actualizar dirección al soltar el pin
     markerCarrito.addListener('dragend', async () => {
-      const pos = markerCarrito.getPosition();
-      latEntrega = pos.lat();
-      lngEntrega = pos.lng();
+      const p = markerCarrito.getPosition();
+      latEntrega = p.lat();
+      lngEntrega = p.lng();
+      document.getElementById('dir-gps-txt').textContent = 'Actualizando...';
       const dir = await obtenerDireccionExacta(latEntrega, lngEntrega);
       document.getElementById('dir-gps-txt').textContent = dir;
       ubicacionActual = dir;
+      localStorage.setItem('pap_ubicacion', dir);
       selDireccion('gps');
     });
+    // Mostrar dirección inicial
+    const dirInicial = await obtenerDireccionExacta(latEntrega, lngEntrega);
+    document.getElementById('dir-gps-txt').textContent = dirInicial;
+    ubicacionActual = dirInicial;
   }, () => {
-    // Sin permiso — mostrar mapa con coordenadas de La Banda
     const fallback = { lat: -27.7333, lng: -64.2667 };
     mapaCarrito = new google.maps.Map(div, { center: fallback, zoom: 14, disableDefaultUI: true, zoomControl: true });
   }, { enableHighAccuracy: true, timeout: 8000 });

@@ -1432,24 +1432,18 @@ async function detectarUbicacion() {
         const data = await res.json();
         if (data.status === 'OK' && data.results.length > 0) {
           const comps = data.results[0].address_components;
+          // DEBUG TEMPORAL
+          alert('Componentes:\n' + comps.map(c => `${c.types[0]}: ${c.long_name}`).join('\n'));
           const barrio = comps.find(c => c.types.includes('sublocality_level_1') || c.types.includes('sublocality') || c.types.includes('neighborhood'))?.long_name;
           const localidad = comps.find(c => c.types.includes('locality'))?.long_name;
           const partido = comps.find(c => c.types.includes('administrative_area_level_2'))?.long_name;
           const provincia = comps.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
-          // Orden: Barrio, Ciudad (locality o partido), Provincia
           const ciudad = localidad || partido;
-          let texto = '';
-          if (barrio && ciudad && barrio !== ciudad) {
-            texto = `${barrio}, ${ciudad}`;
-          } else if (ciudad) {
-            texto = ciudad;
-          } else if (barrio) {
-            texto = barrio;
-          } else {
-            texto = 'Mi ubicación';
-          }
-          if (provincia && !texto.includes(provincia)) texto += `, ${provincia}`;
-          setUbicacionTexto(texto);
+          const partes = [];
+          if (barrio && barrio !== ciudad) partes.push(barrio);
+          if (ciudad) partes.push(ciudad);
+          if (provincia && provincia !== ciudad) partes.push(provincia);
+          setUbicacionTexto(partes.join(', ') || 'Mi ubicación');
         } else {
           setUbicacionTexto('Mi ubicación');
         }

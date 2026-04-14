@@ -783,24 +783,31 @@ async function iniciarMapaCarrito() {
     });
 
     // Actualizar dirección al soltar el pin
-    markerCarrito.addListener('dragend', async () => {
+    const actualizarDesdePin = async () => {
       const p = markerCarrito.getPosition();
       latEntrega = p.lat();
       lngEntrega = p.lng();
       const gpsTxt = document.getElementById('dir-gps-txt');
       if (gpsTxt) gpsTxt.textContent = 'Actualizando...';
-      const dir = await obtenerDireccionExacta(latEntrega, lngEntrega);
-      if (gpsTxt) gpsTxt.textContent = dir;
-      ubicacionActual = dir;
-      localStorage.setItem('pap_ubicacion', dir);
+      try {
+        const dir = await obtenerDireccionExacta(latEntrega, lngEntrega);
+        if (gpsTxt) gpsTxt.textContent = dir || 'Ubicación seleccionada';
+        if (dir) { ubicacionActual = dir; localStorage.setItem('pap_ubicacion', dir); }
+      } catch {
+        if (gpsTxt) gpsTxt.textContent = 'Ubicación seleccionada';
+      }
       selDireccion('gps');
-    });
+    };
+    markerCarrito.addListener('dragend', actualizarDesdePin);
 
     // Mostrar dirección inicial debajo del mapa
     obtenerDireccionExacta(lat, lng).then(dir => {
       const gpsTxt = document.getElementById('dir-gps-txt');
-      if (gpsTxt) gpsTxt.textContent = dir;
-      ubicacionActual = dir;
+      if (gpsTxt) { gpsTxt.textContent = dir || 'Tu ubicación actual'; }
+      if (dir) { ubicacionActual = dir; localStorage.setItem('pap_ubicacion', dir); }
+    }).catch(() => {
+      const gpsTxt = document.getElementById('dir-gps-txt');
+      if (gpsTxt) gpsTxt.textContent = 'Tu ubicación actual';
     });
   };
 

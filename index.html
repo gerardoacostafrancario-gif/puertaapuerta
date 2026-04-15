@@ -790,9 +790,32 @@ function crearMapa(lat, lng) {
       if (gpsTxt) gpsTxt.textContent = dir;
       ubicacionActual = dir;
       selDireccion('gps');
+      // Mostrar campo para agregar número de casa
+      let numInput = document.getElementById('num-casa-wrap');
+      if (!numInput) {
+        numInput = document.createElement('div');
+        numInput.id = 'num-casa-wrap';
+        numInput.style.cssText = 'margin-top:8px;display:flex;gap:8px;align-items:center;';
+        numInput.innerHTML = `
+          <input id="num-casa" placeholder="Número de puerta (ej: 450)" 
+            style="flex:1;border:1.5px solid #FF6B35;border-radius:10px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;"
+            oninput="actualizarNumCasa()"/>`;
+        document.getElementById('dir-opt-gps').after(numInput);
+      }
+      numInput.style.display = 'flex';
     });
   } catch(e) {
     document.getElementById('mapa-wrap').style.display = 'none';
+  }
+}
+
+function actualizarNumCasa() {
+  const num = document.getElementById('num-casa')?.value.trim();
+  const base = ubicacionActual || '';
+  if (num) {
+    const dirConNum = base.replace(/\s+\d+,/, ',').replace(/^([^,]+)/, `$1 ${num}`);
+    document.getElementById('dir-gps-txt').textContent = dirConNum;
+    ubicacionActual = dirConNum;
   }
 }
 

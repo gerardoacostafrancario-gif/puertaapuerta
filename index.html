@@ -1116,29 +1116,16 @@ async function enviarAsistente() {
   agregarTyping();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/asistente', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `Sos el asistente virtual de **Puerta a Puerta**, una app de delivery local de La Banda y Santiago del Estero, Argentina. 
-Ayudás a usuarios, comercios y cadetes con sus dudas.
-Respondé siempre en español, de forma clara, amigable y concisa.
-Sobre la app:
-- Los usuarios pueden pedir delivery de restaurantes, farmacias, supermercados, panaderías y más
-- Los pedidos se confirman y un cadete los entrega
-- Se puede pagar con MercadoPago, efectivo o transferencia
-- Si hay un problema con un pedido, el usuario puede reportarlo y chatear con el comercio
-- El comercio tiene 10 minutos para resolver el problema
-- Si no se resuelve, el pedido se anula y el usuario recibe el reembolso
-- Los cadetes se registran en la app y reciben pedidos para entregar
-No inventes información que no sabes. Si no podés ayudar, decí que lo contacten por WhatsApp.`,
         messages: historialAsistente,
+        rol: 'usuario',
       })
     });
     const data = await res.json();
-    const respuesta = data.content?.[0]?.text || 'Lo siento, no pude procesar tu consulta. Intentá de nuevo.';
+    const respuesta = data.respuesta || 'Lo siento, no pude procesar tu consulta.';
     document.getElementById('typing-indicator')?.remove();
     agregarMsgAsistente('bot', respuesta);
     historialAsistente.push({ role: 'assistant', content: respuesta });

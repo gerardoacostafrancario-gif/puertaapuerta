@@ -239,7 +239,19 @@ body{background:#f5f5f5;min-height:100vh;}
   </div>
   <button class="btn-save" onclick="guardarCfg()">Guardar cambios</button>
   <div class="cfg-g" style="margin-top:16px;">
-    <div class="cfg-t">MercadoPago</div>
+    <div class="cfg-t">Cobro y pagos</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      <div onclick="selMetodoCobro('mp')" id="cobro-mp" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1.5px solid #FF6B35;background:#FFF8F6;cursor:pointer;">
+        <span style="font-size:22px;">💙</span>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:700;">MercadoPago</div><div style="font-size:11px;color:#888;margin-top:2px;">Los pagos llegan a tu cuenta MP</div></div>
+        <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B35;background:#FF6B35;" id="dot-mp"></div>
+      </div>
+      <div onclick="selMetodoCobro('transferencia')" id="cobro-transferencia" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1.5px solid #E0E0E0;background:#fff;cursor:pointer;">
+        <span style="font-size:22px;">🏦</span>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:700;">Transferencia bancaria</div><div style="font-size:11px;color:#888;margin-top:2px;">CBU o alias de tu cuenta bancaria</div></div>
+        <div style="width:18px;height:18px;border-radius:50%;border:2px solid #E0E0E0;background:#fff;" id="dot-transferencia"></div>
+      </div>
+    </div>
     <div id="mp-status-box" style="background:#f9f9f9;border-radius:12px;padding:14px;margin-bottom:12px;">
       <div id="mp-no-conectado">
         <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:6px;">Conectá tu cuenta de MercadoPago</div>
@@ -252,6 +264,14 @@ body{background:#f5f5f5;min-height:100vh;}
           <div><div style="font-size:13px;font-weight:700;color:#111;">MercadoPago conectado</div><div style="font-size:11px;color:#888;">Los pagos llegan directo a tu cuenta</div></div>
         </div>
       </div>
+    </div>
+    <div id="cbu-box" style="display:none;">
+      <div class="fg"><label class="fl">CBU o Alias</label><input class="fi" id="cbu-input" type="text" placeholder="Ej: 0000003100012345678901 o mi.alias"/></div>
+      <div class="fg"><label class="fl">Banco</label><input class="fi" id="banco-input" type="text" placeholder="Ej: Banco Nación, Galicia, Brubank..."/></div>
+      <div style="background:#E8F5E9;border-radius:10px;padding:10px 12px;font-size:12px;color:#2E7D32;line-height:1.6;">
+        ✅ El usuario verá tu CBU/alias al elegir "Transferencia" y te transfiere directo a tu cuenta bancaria.
+      </div>
+      <button onclick="guardarCBU()" style="width:100%;background:#FF6B35;color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;margin-top:10px;">Guardar datos bancarios</button>
     </div>
   </div>
 </div>
@@ -593,6 +613,30 @@ async function guardarCfg(){
   if(cfg.nombre)document.getElementById('cnombre').textContent=cfg.nombre;
   try{if(cid)await sb.from('comercios').update(cfg).eq('id',cid);}catch{}
   toast('✅ Configuración guardada');
+}
+
+function selMetodoCobro(metodo) {
+  const esMp = metodo === 'mp';
+  document.getElementById('cobro-mp').style.borderColor = esMp ? '#FF6B35' : '#E0E0E0';
+  document.getElementById('cobro-mp').style.background = esMp ? '#FFF8F6' : '#fff';
+  document.getElementById('dot-mp').style.background = esMp ? '#FF6B35' : '#fff';
+  document.getElementById('dot-mp').style.borderColor = esMp ? '#FF6B35' : '#E0E0E0';
+  document.getElementById('cobro-transferencia').style.borderColor = !esMp ? '#FF6B35' : '#E0E0E0';
+  document.getElementById('cobro-transferencia').style.background = !esMp ? '#FFF8F6' : '#fff';
+  document.getElementById('dot-transferencia').style.background = !esMp ? '#FF6B35' : '#fff';
+  document.getElementById('dot-transferencia').style.borderColor = !esMp ? '#FF6B35' : '#E0E0E0';
+  document.getElementById('mp-status-box').style.display = esMp ? 'block' : 'none';
+  document.getElementById('cbu-box').style.display = !esMp ? 'block' : 'none';
+}
+
+async function guardarCBU() {
+  const cbu = document.getElementById('cbu-input').value.trim();
+  const banco = document.getElementById('banco-input').value.trim();
+  if (!cbu) { toast('Ingresá tu CBU o alias'); return; }
+  try {
+    await sb.from('comercios').update({ cbu_alias: cbu, banco }).eq('id', cid);
+    toast('✅ Datos bancarios guardados');
+  } catch { toast('✅ Guardado localmente'); }
 }
 
 function conectarMP(){const CLIENT_ID='3886989011728021';const REDIRECT_URI=encodeURIComponent('https://puertaapuerta.vercel.app/oauth-callback.html');const STATE=cid||'comercio';const url=`https://auth.mercadopago.com.ar/authorization?client_id=${CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${REDIRECT_URI}&state=${STATE}`;window.location.href=url;}

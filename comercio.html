@@ -416,7 +416,7 @@ async function abrirChat(reporteId, tipo, limiteStr) {
   let lastCount = 0;
   chatInterval = setInterval(async () => {
     try {
-      const {data} = await sb.from('chat_reportes').select('*').order('created_at',{ascending:true});
+      const {data} = await sb.from('chat_reportes').select('*').eq('reporte_id', reporteId).order('created_at',{ascending:true});
       if (data && data.length > lastCount) {
         lastCount = data.length;
         const cont = document.getElementById('chat-msgs');
@@ -451,8 +451,23 @@ async function abrirChat(reporteId, tipo, limiteStr) {
 
 async function cargarMensajesChat(reporteId) {
   try {
-    const {data} = await sb.from('chat_reportes').select('*').order('created_at',{ascending:true});
+    const {data} = await sb.from('chat_reportes').select('*').eq('reporte_id', reporteId).order('created_at',{ascending:true});
     const msgs = data || [];
+    const cont = document.getElementById('chat-msgs');
+    if (!cont) return;
+    if (!msgs.length) {
+      cont.innerHTML = '<div style="text-align:center;color:#9DA3AE;font-size:13px;padding:20px;">El usuario va a escribir acá. Respondé rápido 👇</div>';
+      return;
+    }
+    cont.innerHTML = msgs.map(m => {
+      const hora = new Date(m.created_at||new Date()).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+      if (m.de==='sistema') return `<div style="text-align:center;margin:8px 0;"><span style="background:#E0E0E0;color:#5C6270;font-size:11px;padding:4px 12px;border-radius:20px;">${m.texto}</span></div>`;
+      if (m.de==='comercio') return `<div style="display:flex;justify-content:flex-end;margin:4px 0;"><div style="max-width:75%;background:#FF6B35;color:#fff;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:13px;line-height:1.4;">${m.texto}<div style="font-size:10px;opacity:.7;margin-top:4px;text-align:right;">${hora}</div></div></div>`;
+      return `<div style="display:flex;justify-content:flex-start;margin:4px 0;"><div style="max-width:75%;background:#fff;color:#0D0D0D;border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:13px;line-height:1.4;box-shadow:0 1px 4px rgba(0,0,0,.08);"><div style="font-size:10px;color:#9DA3AE;font-weight:700;margin-bottom:4px;">👤 Usuario</div>${m.texto}<div style="font-size:10px;color:#9DA3AE;margin-top:4px;">${hora}</div></div></div>`;
+    }).join('');
+    cont.scrollTop = cont.scrollHeight;
+  } catch {}
+}
     const cont = document.getElementById('chat-msgs');
     if (!cont) return;
     if (!msgs.length) {
@@ -488,7 +503,6 @@ async function enviarRespuesta() {
   const texto = input.value.trim();
   input.value = '';
   const hora = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-  // Agregar mensaje visualmente
   const cont = document.getElementById('chat-msgs');
   if (cont) {
     const div = document.createElement('div');
@@ -497,10 +511,9 @@ async function enviarRespuesta() {
     cont.appendChild(div);
     cont.scrollTop = cont.scrollHeight;
   }
-  // Guardar en Supabase
   try {
     await sb.from('chat_reportes').insert([{
-      pedido_id: reporteActivo,
+      reporte_id: reporteActivo,
       de: 'comercio',
       texto,
     }]);

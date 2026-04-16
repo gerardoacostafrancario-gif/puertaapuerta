@@ -981,6 +981,7 @@ async function reportarProblema(tipo) {
     }]).select().single();
     reporteId = data?.id;
     await sb.from('chat_reportes').insert([{
+      reporte_id: reporteId,
       pedido_id: currentPedido?.id,
       comercio_id: currentComercio?.id,
       de: 'sistema',
@@ -1014,7 +1015,7 @@ async function abrirChatReporte(reporteId, tipoLabel, limiteStr) {
   let lastCount = 0;
   chatReporteInterval = setInterval(async () => {
     try {
-      const { data } = await sb.from('chat_reportes').select('*').order('created_at', { ascending: true });
+      const { data } = await sb.from('chat_reportes').select('*').eq('reporte_id', reporteId).order('created_at', { ascending: true });
       if (data && data.length > lastCount) {
         lastCount = data.length;
         const cont = document.getElementById('chat-reporte-msgs');
@@ -1062,7 +1063,7 @@ async function cargarMsgsChatReporte() {
   const cont = document.getElementById('chat-reporte-msgs');
   if (!cont) return;
   try {
-    const { data } = await sb.from('chat_reportes').select('*').order('created_at', { ascending: true });
+    const { data } = await sb.from('chat_reportes').select('*').eq('reporte_id', chatReporteId).order('created_at', { ascending: true });
     cont.innerHTML = '';
     if (!data || !data.length) {
       cont.innerHTML = '<div style="text-align:center;color:#9DA3AE;font-size:13px;padding:20px;">Esperá la respuesta del comercio...</div>';
@@ -1112,6 +1113,7 @@ async function enviarMsgReporte() {
   agregarBurbuja('usuario', texto, null);
   try {
     await sb.from('chat_reportes').insert([{
+      reporte_id: chatReporteId,
       pedido_id: currentPedido?.id,
       comercio_id: currentComercio?.id,
       de: 'usuario',

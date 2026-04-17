@@ -9,7 +9,6 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:#f5f5f5;}
 .app{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:80px;}
-
 .header{background:#111;padding:16px;display:flex;align-items:center;gap:12px;}
 .header-logo{width:40px;height:40px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .header-info{flex:1;}
@@ -19,21 +18,16 @@ body{background:#f5f5f5;}
 .disp-btn span{font-size:12px;font-weight:700;color:#fff;}
 .disp-dot{width:10px;height:10px;border-radius:50%;background:#aaa;}
 .disp-dot.on{background:#00E676;}
-
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px;}
 .stat{background:#f9f9f9;border-radius:12px;padding:12px 10px;text-align:center;}
 .stat-val{font-size:22px;font-weight:700;color:#111;}
 .stat-lbl{font-size:10px;color:#888;margin-top:2px;}
-
 .tabs{display:flex;border-bottom:2px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:50;}
-.tab{flex:1;padding:12px 8px;text-align:center;font-size:12px;font-weight:500;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab{flex:1;padding:12px 6px;text-align:center;font-size:12px;font-weight:500;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
 .tab.active{color:#FF6B35;border-bottom-color:#FF6B35;font-weight:700;}
 .badge-n{background:#FF6B35;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:3px;vertical-align:middle;}
-
 .sec{display:none;padding:14px;}
 .sec.active{display:block;}
-
-/* VIAJE CARD */
 .viaje-card{border-radius:14px;padding:14px;margin-bottom:12px;border:1.5px solid #f0f0f0;}
 .viaje-card.nuevo{border-color:#FF6B35;background:#FFFAF8;}
 .viaje-card.activo{border-color:#00C853;background:#F0FFF4;}
@@ -43,8 +37,6 @@ body{background:#f5f5f5;}
 .v-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
 .vp-nuevo{background:#FFF3E0;color:#E65100;}
 .vp-camino{background:#E8F5E9;color:#2E7D32;}
-.vp-done{background:#F5F5F5;color:#555;}
-
 .v-route{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
 .v-stop{display:flex;gap:10px;align-items:flex-start;}
 .v-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:3px;}
@@ -54,20 +46,15 @@ body{background:#f5f5f5;}
 .v-stop-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;}
 .v-stop-addr{font-size:13px;color:#111;margin-top:1px;}
 .v-stop-name{font-size:11px;color:#888;}
-
 .v-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
 .v-tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;}
 .vt-earn{background:#E8F5E9;color:#2E7D32;}
 .vt-dist{background:#E3F2FD;color:#1565C0;}
 .vt-time{background:#FFF3E0;color:#E65100;}
-
 .v-acts{display:flex;gap:8px;}
 .btn{flex:1;padding:11px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
 .btn-o{background:#FF6B35;color:#fff;}
 .btn-g{background:#f0f0f0;color:#555;}
-.btn-full{width:100%;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;}
-
-/* CÓDIGO DE VERIFICACIÓN */
 .cod-box{background:#111;border-radius:12px;padding:14px;margin:10px 0;}
 .cod-title{font-size:12px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
 .cod-desc{font-size:11px;color:#888;margin-bottom:12px;line-height:1.5;}
@@ -78,8 +65,6 @@ body{background:#f5f5f5;}
 .btn-verificar:disabled{opacity:.4;cursor:not-allowed;}
 .cod-error{font-size:12px;color:#FF5252;text-align:center;margin-top:6px;display:none;}
 .cod-ok{background:#00C853;color:#fff;border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:700;display:none;}
-
-/* GANANCIAS */
 .earn-card{background:#111;border-radius:14px;padding:16px;margin-bottom:12px;color:#fff;}
 .earn-val{font-size:32px;font-weight:900;color:#00E676;margin-bottom:4px;}
 .earn-lbl{font-size:12px;color:#aaa;}
@@ -87,35 +72,26 @@ body{background:#f5f5f5;}
 .eg{background:#1a1a1a;border-radius:10px;padding:12px;}
 .eg-val{font-size:18px;font-weight:700;color:#fff;}
 .eg-lbl{font-size:11px;color:#888;margin-top:2px;}
-.viaje-hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5;font-size:13px;}
-.vh-addr{color:#111;font-weight:500;}
-.vh-earn{color:#00C853;font-weight:700;}
-.vh-time{font-size:11px;color:#888;}
-
-/* PERFIL */
 .perf-av{width:60px;height:60px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;}
 .perf-menu{background:#f9f9f9;border-radius:14px;overflow:hidden;}
 .pm-item{padding:14px 16px;border-bottom:1px solid #eee;font-size:13px;font-weight:500;color:#111;display:flex;justify-content:space-between;}
 .pm-item:last-child{border-bottom:none;}
-
 .empty{text-align:center;padding:50px 20px;color:#aaa;}
 .empty .big{font-size:44px;margin-bottom:10px;}
 .empty p{font-size:13px;line-height:1.7;}
-
 .nav{display:flex;justify-content:space-around;padding:10px 0 14px;border-top:1px solid #eee;background:#fff;position:fixed;bottom:0;width:100%;max-width:480px;z-index:100;}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
 .ni svg{width:22px;height:22px;}
 .ni span{font-size:10px;color:#888;}
 .ni.active span{color:#FF6B35;font-weight:700;}
-
+.ni.active svg{stroke:#FF6B35;}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111;color:#FF6B35;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;display:none;white-space:nowrap;}
-
-/* NO DISPONIBLE */
 .no-disp{text-align:center;padding:40px 20px;}
 .no-disp .big{font-size:48px;margin-bottom:12px;}
 .no-disp h3{font-size:16px;font-weight:700;color:#111;margin-bottom:8px;}
 .no-disp p{font-size:13px;color:#888;line-height:1.7;margin-bottom:20px;}
 .btn-activar{background:#FF6B35;color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 </style>
 </head>
 <body>
@@ -135,7 +111,7 @@ body{background:#f5f5f5;}
     <div class="header-sub">Cadete · Puerta a Puerta</div>
   </div>
   <button class="disp-btn" onclick="togDisp()">
-    <div class="disp-dot" id="disp-dot"></div>
+    <div class="disp-dot on" id="disp-dot"></div>
     <span id="disp-lbl">Disponible</span>
   </button>
 </div>
@@ -149,6 +125,7 @@ body{background:#f5f5f5;}
 <div class="tabs">
   <div class="tab active" id="tab-v" onclick="stab('v')">Viajes <span class="badge-n" id="bn" style="display:none">0</span></div>
   <div class="tab" id="tab-g" onclick="stab('g')">Ganancias</div>
+  <div class="tab" id="tab-ia" onclick="stab('ia');iniciarAsistenteCadete()">🤖 Ayuda</div>
   <div class="tab" id="tab-p" onclick="stab('p')">Perfil</div>
 </div>
 
@@ -168,8 +145,37 @@ body{background:#f5f5f5;}
     </div>
   </div>
   <div style="font-size:13px;font-weight:700;color:#111;margin:4px 0 10px;">Últimos viajes</div>
-  <div id="hist-container">
-    <div class="empty"><div class="big">🛵</div><p>Todavía no hiciste viajes.<br/>Activate para recibir pedidos.</p></div>
+  <div id="hist-container"><div class="empty"><div class="big">🛵</div><p>Todavía no hiciste viajes.</p></div></div>
+</div>
+
+<!-- ASISTENTE IA -->
+<div class="sec" id="sec-ia">
+  <div style="background:linear-gradient(135deg,#111,#222);border-radius:16px;overflow:hidden;margin-bottom:12px;">
+    <div style="padding:16px;display:flex;align-items:center;gap:12px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🤖</div>
+      <div>
+        <div style="font-size:15px;font-weight:800;color:#fff;">Asistente IA</div>
+        <div style="font-size:11px;color:#aaa;margin-top:2px;">Tu compañero de ruta siempre disponible</div>
+      </div>
+    </div>
+    <div id="ia-msgs" style="height:300px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;"></div>
+    <div style="padding:12px;display:flex;gap:8px;align-items:center;border-top:1px solid #333;">
+      <input id="ia-input" placeholder="Preguntame lo que necesitás..."
+        style="flex:1;background:#1a1a1a;border:1.5px solid #333;border-radius:20px;padding:9px 14px;font-size:13px;outline:none;color:#fff;font-family:inherit;"
+        onkeydown="if(event.key==='Enter')enviarIACadete()"/>
+      <button onclick="enviarIACadete()" id="ia-btn" style="width:38px;height:38px;border-radius:50%;background:#FF6B35;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Preguntas rápidas -->
+  <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Preguntas frecuentes</div>
+  <div style="display:flex;flex-direction:column;gap:6px;">
+    <button onclick="preguntaRapidaCadete('¿Cómo funciona el sistema de pagos?')" style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 14px;text-align:left;font-size:13px;color:#333;cursor:pointer;font-family:inherit;">¿Cómo funciona el sistema de pagos? →</button>
+    <button onclick="preguntaRapidaCadete('¿Qué hago si el cliente no está en casa?')" style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 14px;text-align:left;font-size:13px;color:#333;cursor:pointer;font-family:inherit;">¿Qué hago si el cliente no está en casa? →</button>
+    <button onclick="preguntaRapidaCadete('¿Cómo mejoro mi rating?')" style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 14px;text-align:left;font-size:13px;color:#333;cursor:pointer;font-family:inherit;">¿Cómo mejoro mi rating? →</button>
+    <button onclick="preguntaRapidaCadete('¿Qué hago si hay un problema con el pedido?')" style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 14px;text-align:left;font-size:13px;color:#333;cursor:pointer;font-family:inherit;">¿Qué hago si hay un problema con el pedido? →</button>
   </div>
 </div>
 
@@ -180,7 +186,6 @@ body{background:#f5f5f5;}
     <div>
       <div style="font-size:16px;font-weight:700;color:#111;" id="perf-nombre">Miguel González</div>
       <div style="font-size:12px;color:#888;">Cadete verificado · Moto Honda Wave</div>
-      <div style="font-size:12px;color:#888;">+54 385 412 3456</div>
     </div>
   </div>
   <div class="perf-menu">
@@ -190,19 +195,15 @@ body{background:#f5f5f5;}
     <div class="pm-item">Historial de pagos <span style="color:#888;">›</span></div>
     <div class="pm-item" style="color:#B71C1C;">Cerrar sesión <span>›</span></div>
   </div>
-
   <div style="background:#1a1a1a;border-radius:14px;padding:16px;margin-top:16px;">
     <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;">MercadoPago</div>
-    <div id="cad-mp-no" style="">
-      <div style="font-size:12px;color:#aaa;margin-bottom:12px;line-height:1.6;">Conectá tu cuenta para recibir el 75% de cada viaje directo en tu MP. Sin esperas.</div>
+    <div id="cad-mp-no">
+      <div style="font-size:12px;color:#aaa;margin-bottom:12px;line-height:1.6;">Conectá tu cuenta para recibir el 75% de cada viaje directo en tu MP.</div>
       <button onclick="conectarMPCadete()" style="width:100%;background:#009EE3;color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">💳 Conectar MercadoPago</button>
     </div>
     <div id="cad-mp-si" style="display:none;align-items:center;gap:10px;">
       <div style="width:36px;height:36px;border-radius:50%;background:#00C853;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✓</div>
-      <div>
-        <div style="font-size:13px;font-weight:700;color:#fff;">MercadoPago conectado</div>
-        <div style="font-size:11px;color:#aaa;">El 75% de cada viaje llega directo a tu cuenta</div>
-      </div>
+      <div><div style="font-size:13px;font-weight:700;color:#fff;">MercadoPago conectado</div><div style="font-size:11px;color:#aaa;">El 75% de cada viaje llega directo a tu cuenta</div></div>
     </div>
   </div>
 </div>
@@ -216,6 +217,10 @@ body{background:#f5f5f5;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
     <span>Ganancias</span>
   </div>
+  <div class="ni" id="ni-ia" onclick="stab('ia');iniciarAsistenteCadete();aN('ni-ia')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    <span>Ayuda</span>
+  </div>
   <div class="ni" id="ni-p" onclick="stab('p');aN('ni-p')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span>Perfil</span>
@@ -227,7 +232,6 @@ body{background:#f5f5f5;}
 const SU='https://fmqlpgerqdiplnvjjarl.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcWxwZ2VycWRpcGxudmpqYXJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MTkwNTYsImV4cCI6MjA5MDQ5NTA1Nn0.r1X4NSX8t-v9EeJQ-eK9DVslIWkpo2_UCn-oRy6k--w';
 const sb=supabase.createClient(SU,SK);
-
 let disp=true, viajes=[], codsIngresados={};
 
 function toast(m,d=2500){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',d);}
@@ -238,268 +242,136 @@ function togDisp(){
   disp=!disp;
   document.getElementById('disp-dot').className='disp-dot'+(disp?' on':'');
   document.getElementById('disp-lbl').textContent=disp?'Disponible':'Inactivo';
-  toast(disp?'✅ Estás disponible para recibir viajes':'⏸️ Pausaste los viajes');
+  toast(disp?'✅ Estás disponible':'⏸️ Pausaste los viajes');
   renderViajes();
 }
 
-// Generar código de 4 dígitos para un pedido
 function genCod(pedId){
-  const seed = pedId.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const seed=pedId.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
   return String((seed*7+1337)%9000+1000);
 }
 
 async function cargarViajes(){
-  try {
-    const {data} = await sb.from('pedidos').select('*,comercios(nombre,direccion)').eq('tipo_delivery','app').in('estado',['preparando','en_camino']).order('created_at',{ascending:false});
-    viajes = data||[];
-  } catch {
-    viajes = [
-      {id:'v1',numero:1043,estado:'preparando',tipo_delivery:'app',items:[{nombre:'Pizza Muzarella',qty:1,precio:2500},{nombre:'Coca Cola',qty:2,precio:800}],total:5700,direccion_entrega:'Urquiza 456, Santiago del Estero',created_at:new Date().toISOString(),comercios:{nombre:'La Piola Pizzería',direccion:'Av. Belgrano 234'}},
-      {id:'v2',numero:1041,estado:'en_camino',tipo_delivery:'app',items:[{nombre:'Empanadas x6',qty:1,precio:1800}],total:2600,direccion_entrega:'San Martín 789, Santiago del Estero',created_at:new Date(Date.now()-900000).toISOString(),comercios:{nombre:'Carnicería El Norte',direccion:'25 de Mayo 567'}},
-    ];
+  try{
+    const{data}=await sb.from('pedidos').select('*,comercios(nombre,direccion)').eq('tipo_delivery','app').in('estado',['preparando','en_camino']).order('created_at',{ascending:false});
+    viajes=data||[];
+  }catch{
+    viajes=[{id:'v1',numero:1043,estado:'preparando',tipo_delivery:'app',items:[{nombre:'Pizza Muzarella',qty:1,precio:2500}],total:5700,direccion_entrega:'Urquiza 456, Santiago del Estero',created_at:new Date().toISOString(),comercios:{nombre:'La Piola Pizzería',direccion:'Av. Belgrano 234'}}];
   }
-  renderViajes();
-  actualizarStats();
+  renderViajes();actualizarStats();
 }
 
 function renderViajes(){
-  const container = document.getElementById('viajes-container');
-  if(!disp){
-    container.innerHTML=`<div class="no-disp"><div class="big">⏸️</div><h3>Estás inactivo</h3><p>Activate para empezar a recibir viajes y ganar dinero.</p><button class="btn-activar" onclick="togDisp()">Activarme ahora</button></div>`;
-    return;
-  }
-  if(!viajes.length){
-    container.innerHTML='<div class="empty"><div class="big">🛵</div><p>No hay viajes disponibles ahora.<br/>Cuando lleguen aparecen acá.</p></div>';
-    return;
-  }
-
-  const nuevos = viajes.filter(v=>v.estado==='preparando').length;
-  const bn = document.getElementById('bn');
-  bn.style.display = nuevos>0?'inline-flex':'none';
-  bn.textContent = nuevos;
-
-  container.innerHTML = viajes.map(v => {
-    const cod = genCod(v.id);
-    const hr = new Date(v.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    const earn = Math.round(Number(v.costo_envio||800)*0.75);
-    const comercioNombre = v.comercios?.nombre || 'Comercio';
-    const comercioDir = v.comercios?.direccion || 'Dirección del local';
-
-    if(v.estado==='preparando'){
-      return `<div class="viaje-card nuevo">
-        <div class="v-head">
-          <div><div class="v-num">Viaje #${v.numero||'—'}</div><div class="v-time">${hr} hs</div></div>
-          <span class="v-pill vp-nuevo">Disponible</span>
-        </div>
-        <div class="v-route">
-          <div class="v-stop">
-            <div><div class="v-dot vd-retiro"></div><div class="v-line"></div></div>
-            <div><div class="v-stop-label">Retirás en</div><div class="v-stop-name">${comercioNombre}</div><div class="v-stop-addr">${comercioDir}</div></div>
-          </div>
-          <div class="v-stop">
-            <div><div class="v-dot vd-entrega"></div></div>
-            <div><div class="v-stop-label">Entregás en</div><div class="v-stop-addr">${v.direccion_entrega||'Dirección del cliente'}</div></div>
-          </div>
-        </div>
-        <div class="v-meta">
-          <span class="v-tag vt-earn">Ganás $${earn.toLocaleString('es-AR')}</span>
-          <span class="v-tag vt-dist">~2.5 km</span>
-          <span class="v-tag vt-time">~15 min</span>
-        </div>
-        <div class="v-acts">
-          <button class="btn btn-o" onclick="aceptarViaje('${v.id}')">Aceptar viaje</button>
-          <button class="btn btn-g" onclick="rechazarViaje('${v.id}')">Rechazar</button>
-        </div>
-      </div>`;
-    }
-
-    if(v.estado==='en_camino'){
-      const codOk = codsIngresados[v.id] === cod;
-      return `<div class="viaje-card activo">
-        <div class="v-head">
-          <div><div class="v-num">Viaje #${v.numero||'—'}</div><div class="v-time">${hr} hs</div></div>
-          <span class="v-pill vp-camino">En camino</span>
-        </div>
-        <div class="v-route">
-          <div class="v-stop">
-            <div><div class="v-dot vd-retiro"></div><div class="v-line"></div></div>
-            <div><div class="v-stop-label">Retiraste en</div><div class="v-stop-name">${comercioNombre}</div></div>
-          </div>
-          <div class="v-stop">
-            <div><div class="v-dot vd-entrega"></div></div>
-            <div><div class="v-stop-label">Entregás en</div><div class="v-stop-addr">${v.direccion_entrega||'Dirección del cliente'}</div></div>
-          </div>
-        </div>
-        <div class="v-meta">
-          <span class="v-tag vt-earn">Ganás $${earn.toLocaleString('es-AR')}</span>
-        </div>
-        <div class="cod-box">
-          <div class="cod-title">Código de entrega</div>
-          <div class="cod-desc">Pedile al cliente el código de 4 dígitos que recibió en su app. Ingresalo para confirmar la entrega.</div>
-          <div class="cod-input-row">
-            <input class="cod-digit" id="cod-${v.id}-1" type="number" maxlength="1" min="0" max="9" oninput="moverFoco(this,'cod-${v.id}-2')" onkeyup="checkCod('${v.id}','${cod}')"/>
-            <input class="cod-digit" id="cod-${v.id}-2" type="number" maxlength="1" min="0" max="9" oninput="moverFoco(this,'cod-${v.id}-3')" onkeyup="checkCod('${v.id}','${cod}')"/>
-            <input class="cod-digit" id="cod-${v.id}-3" type="number" maxlength="1" min="0" max="9" oninput="moverFoco(this,'cod-${v.id}-4')" onkeyup="checkCod('${v.id}','${cod}')"/>
-            <input class="cod-digit" id="cod-${v.id}-4" type="number" maxlength="1" min="0" max="9" onkeyup="checkCod('${v.id}','${cod}')"/>
-          </div>
-          <div class="cod-error" id="err-${v.id}">Código incorrecto. Pedile el código al cliente.</div>
-          <div class="cod-ok" id="ok-${v.id}">✅ Código correcto</div>
-          <button class="btn-verificar" id="btn-ver-${v.id}" onclick="verificarEntrega('${v.id}','${cod}')" disabled>Confirmar entrega</button>
-        </div>
-      </div>`;
-    }
-    return '';
+  const container=document.getElementById('viajes-container');
+  if(!disp){container.innerHTML='<div class="no-disp"><div class="big">⏸️</div><h3>Estás inactivo</h3><p>Activate para recibir viajes.</p><button class="btn-activar" onclick="togDisp()">Activarme ahora</button></div>';return;}
+  if(!viajes.length){container.innerHTML='<div class="empty"><div class="big">🛵</div><p>No hay viajes disponibles.<br/>Cuando lleguen aparecen acá.</p></div>';return;}
+  const nuevos=viajes.filter(v=>v.estado==='preparando').length;
+  const bn=document.getElementById('bn');bn.style.display=nuevos>0?'inline-flex':'none';bn.textContent=nuevos;
+  container.innerHTML=viajes.map(v=>{
+    const cod=genCod(v.id);
+    const hr=new Date(v.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    const earn=Math.round(Number(v.costo_envio||800)*0.75);
+    const cn=v.comercios?.nombre||'Comercio';
+    const cd=v.comercios?.direccion||'Dirección del local';
+    if(v.estado==='preparando')return`<div class="viaje-card nuevo"><div class="v-head"><div><div class="v-num">Viaje #${v.numero||'—'}</div><div class="v-time">${hr} hs</div></div><span class="v-pill vp-nuevo">Disponible</span></div><div class="v-route"><div class="v-stop"><div><div class="v-dot vd-retiro"></div><div class="v-line"></div></div><div><div class="v-stop-label">Retirás en</div><div class="v-stop-name">${cn}</div><div class="v-stop-addr">${cd}</div></div></div><div class="v-stop"><div><div class="v-dot vd-entrega"></div></div><div><div class="v-stop-label">Entregás en</div><div class="v-stop-addr">${v.direccion_entrega||'Dirección del cliente'}</div></div></div></div><div class="v-meta"><span class="v-tag vt-earn">Ganás $${earn.toLocaleString('es-AR')}</span><span class="v-tag vt-dist">~2.5 km</span><span class="v-tag vt-time">~15 min</span></div><div class="v-acts"><button class="btn btn-o" onclick="aceptarViaje('${v.id}')">Aceptar viaje</button><button class="btn btn-g" onclick="rechazarViaje('${v.id}')">Rechazar</button></div></div>`;
+    if(v.estado==='en_camino')return`<div class="viaje-card activo"><div class="v-head"><div><div class="v-num">Viaje #${v.numero||'—'}</div><div class="v-time">${hr} hs</div></div><span class="v-pill vp-camino">En camino</span></div><div class="v-route"><div class="v-stop"><div><div class="v-dot vd-retiro"></div><div class="v-line"></div></div><div><div class="v-stop-label">Retiraste en</div><div class="v-stop-name">${cn}</div></div></div><div class="v-stop"><div><div class="v-dot vd-entrega"></div></div><div><div class="v-stop-label">Entregás en</div><div class="v-stop-addr">${v.direccion_entrega||'Dirección del cliente'}</div></div></div></div><div class="v-meta"><span class="v-tag vt-earn">Ganás $${earn.toLocaleString('es-AR')}</span></div><div class="cod-box"><div class="cod-title">Código de entrega</div><div class="cod-desc">Pedile al cliente el código de 4 dígitos.</div><div class="cod-input-row"><input class="cod-digit" id="cod-${v.id}-1" type="number" maxlength="1" oninput="moverFoco(this,'cod-${v.id}-2')" onkeyup="checkCod('${v.id}','${cod}')"/><input class="cod-digit" id="cod-${v.id}-2" type="number" maxlength="1" oninput="moverFoco(this,'cod-${v.id}-3')" onkeyup="checkCod('${v.id}','${cod}')"/><input class="cod-digit" id="cod-${v.id}-3" type="number" maxlength="1" oninput="moverFoco(this,'cod-${v.id}-4')" onkeyup="checkCod('${v.id}','${cod}')"/><input class="cod-digit" id="cod-${v.id}-4" type="number" maxlength="1" onkeyup="checkCod('${v.id}','${cod}')"/></div><div class="cod-error" id="err-${v.id}">Código incorrecto.</div><div class="cod-ok" id="ok-${v.id}">✅ Código correcto</div><button class="btn-verificar" id="btn-ver-${v.id}" onclick="verificarEntrega('${v.id}','${cod}')" disabled>Confirmar entrega</button></div></div>`;
+    return'';
   }).join('');
 }
 
-function moverFoco(el, nextId){
-  el.value = el.value.toString().slice(-1);
-  if(el.value && nextId) document.getElementById(nextId)?.focus();
-}
+function moverFoco(el,nextId){el.value=el.value.toString().slice(-1);if(el.value&&nextId)document.getElementById(nextId)?.focus();}
+function checkCod(vid,cod){const d1=document.getElementById(`cod-${vid}-1`)?.value||'';const d2=document.getElementById(`cod-${vid}-2`)?.value||'';const d3=document.getElementById(`cod-${vid}-3`)?.value||'';const d4=document.getElementById(`cod-${vid}-4`)?.value||'';const ing=d1+d2+d3+d4;const btn=document.getElementById(`btn-ver-${vid}`);const err=document.getElementById(`err-${vid}`);const ok=document.getElementById(`ok-${vid}`);if(ing.length===4){if(ing===cod){btn.disabled=false;err.style.display='none';ok.style.display='block';codsIngresados[vid]=ing;}else{btn.disabled=true;err.style.display='block';ok.style.display='none';}}else{btn.disabled=true;err.style.display='none';ok.style.display='none';}}
 
-function checkCod(vid, cod){
-  const d1 = document.getElementById(`cod-${vid}-1`)?.value||'';
-  const d2 = document.getElementById(`cod-${vid}-2`)?.value||'';
-  const d3 = document.getElementById(`cod-${vid}-3`)?.value||'';
-  const d4 = document.getElementById(`cod-${vid}-4`)?.value||'';
-  const ingresado = d1+d2+d3+d4;
-  const btn = document.getElementById(`btn-ver-${vid}`);
-  const err = document.getElementById(`err-${vid}`);
-  const ok = document.getElementById(`ok-${vid}`);
-  if(ingresado.length===4){
-    if(ingresado===cod){
-      btn.disabled=false;
-      err.style.display='none';
-      ok.style.display='block';
-      codsIngresados[vid]=ingresado;
-    } else {
-      btn.disabled=true;
-      err.style.display='block';
-      ok.style.display='none';
-    }
-  } else {
-    btn.disabled=true;
-    err.style.display='none';
-    ok.style.display='none';
-  }
-}
-
-async function aceptarViaje(id){
-  const v = viajes.find(x=>x.id===id);
-  if(v) v.estado='en_camino';
-  try{ await sb.from('pedidos').update({estado:'en_camino'}).eq('id',id); }catch{}
-  renderViajes();
-  toast('✅ Viaje aceptado · Andá a retirar el pedido');
-}
-
-function rechazarViaje(id){
-  viajes = viajes.filter(v=>v.id!==id);
-  renderViajes();
-  toast('Viaje rechazado');
-}
-
-async function verificarEntrega(id, cod){
-  const ingresado = codsIngresados[id];
-  if(ingresado !== cod){ toast('❌ Código incorrecto'); return; }
-  const earn = Math.round(800*0.75);
-  const v = viajes.find(x=>x.id===id);
-  if(v) v.estado='entregado';
-  try{ await sb.from('pedidos').update({estado:'entregado'}).eq('id',id); }catch{}
-  viajes = viajes.filter(x=>x.id!==id);
-  renderViajes();
-  actualizarStats();
-  toast(`🎉 Entrega confirmada · Ganaste $${earn.toLocaleString('es-AR')}`, 3500);
-}
+async function aceptarViaje(id){const v=viajes.find(x=>x.id===id);if(v)v.estado='en_camino';try{await sb.from('pedidos').update({estado:'en_camino'}).eq('id',id);}catch{}renderViajes();toast('✅ Viaje aceptado · Andá a retirar');}
+function rechazarViaje(id){viajes=viajes.filter(v=>v.id!==id);renderViajes();toast('Viaje rechazado');}
+async function verificarEntrega(id,cod){const ing=codsIngresados[id];if(ing!==cod){toast('❌ Código incorrecto');return;}const earn=Math.round(800*0.75);const v=viajes.find(x=>x.id===id);if(v)v.estado='entregado';try{await sb.from('pedidos').update({estado:'entregado'}).eq('id',id);}catch{}viajes=viajes.filter(x=>x.id!==id);renderViajes();actualizarStats();toast(`🎉 Entrega confirmada · Ganaste $${earn.toLocaleString('es-AR')}`,3500);}
 
 function actualizarStats(){
-  const hoy = viajes.filter(v=>{
-    const d=new Date(v.created_at),n=new Date();
-    return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth();
-  });
-  document.getElementById('s-hoy').textContent = hoy.length;
-  const earn = hoy.length * Math.round(800*0.75);
-  document.getElementById('s-earn').textContent = earn>0?`$${earn.toLocaleString('es-AR')}`:'$0';
-
-  // Ganancias tab
-  document.getElementById('earn-sem').textContent = `$${(viajes.length*750).toLocaleString('es-AR')}`;
-  document.getElementById('eg-viajes').textContent = viajes.length;
-  document.getElementById('eg-prom').textContent = `$700`;
+  const hoy=viajes.filter(v=>{const d=new Date(v.created_at),n=new Date();return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth();});
+  document.getElementById('s-hoy').textContent=hoy.length;
+  const earn=hoy.length*Math.round(800*0.75);
+  document.getElementById('s-earn').textContent=earn>0?`$${earn.toLocaleString('es-AR')}`:'$0';
+  document.getElementById('earn-sem').textContent=`$${(viajes.length*750).toLocaleString('es-AR')}`;
+  document.getElementById('eg-viajes').textContent=viajes.length;
+  document.getElementById('eg-prom').textContent='$700';
 }
 
-setInterval(cargarViajes, 20000);
+// ── ASISTENTE IA CADETE ──
+let iaHistorialCadete=[];
+let iaIniciadoCadete=false;
 
-// PROTECCIÓN — verificar sesión activa
-sb.auth.getSession().then(({data:{session}}) => {
-  if(!session) {
-    window.location.href = '/login.html';
-  } else {
-    cargarViajes();
+function iniciarAsistenteCadete(){
+  if(iaIniciadoCadete)return;
+  iaIniciadoCadete=true;
+  agregarMsgIACadete('bot','¡Hola! Soy tu asistente de ruta 🤖\n\nPuedo ayudarte con:\n• Cómo funciona el sistema de pagos\n• Qué hacer si hay un problema en la entrega\n• Cómo mejorar tu rating\n• Dudas sobre la app\n\n¿En qué te ayudo?');
+}
+
+function agregarMsgIACadete(de,texto){
+  const cont=document.getElementById('ia-msgs');
+  if(!cont)return;
+  const esBot=de==='bot';
+  const textoHtml=texto.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const div=document.createElement('div');
+  div.style.cssText=`display:flex;justify-content:${esBot?'flex-start':'flex-end'};`;
+  if(esBot){
+    div.innerHTML=`<div style="max-width:85%;background:#1a1a1a;color:#fff;border-radius:4px 14px 14px 14px;padding:10px 14px;font-size:13px;line-height:1.6;">${textoHtml}</div>`;
+  }else{
+    div.innerHTML=`<div style="max-width:85%;background:#FF6B35;color:#fff;border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;line-height:1.5;">${textoHtml}</div>`;
   }
+  cont.appendChild(div);
+  cont.scrollTop=cont.scrollHeight;
+}
+
+function preguntaRapidaCadete(pregunta){
+  const input=document.getElementById('ia-input');
+  if(input){input.value=pregunta;enviarIACadete();}
+}
+
+async function enviarIACadete(){
+  const input=document.getElementById('ia-input');
+  const btn=document.getElementById('ia-btn');
+  if(!input||!input.value.trim())return;
+  const texto=input.value.trim();
+  input.value='';
+  btn.disabled=true;
+  agregarMsgIACadete('usuario',texto);
+  iaHistorialCadete.push({role:'user',content:texto});
+  const cont=document.getElementById('ia-msgs');
+  const typing=document.createElement('div');
+  typing.id='ia-typing';
+  typing.style.cssText='display:flex;justify-content:flex-start;';
+  typing.innerHTML='<div style="background:#1a1a1a;border-radius:4px 14px 14px 14px;padding:10px 16px;"><div style="display:flex;gap:4px;height:16px;align-items:center;"><div style="width:6px;height:6px;border-radius:50%;background:#555;animation:bounce 1.2s infinite;"></div><div style="width:6px;height:6px;border-radius:50%;background:#555;animation:bounce 1.2s .2s infinite;"></div><div style="width:6px;height:6px;border-radius:50%;background:#555;animation:bounce 1.2s .4s infinite;"></div></div></div>';
+  if(cont){cont.appendChild(typing);cont.scrollTop=cont.scrollHeight;}
+  try{
+    const res=await fetch('/api/asistente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:iaHistorialCadete,rol:'cadete'})});
+    const data=await res.json();
+    const respuesta=data.respuesta||'No pude procesar tu consulta.';
+    document.getElementById('ia-typing')?.remove();
+    agregarMsgIACadete('bot',respuesta);
+    iaHistorialCadete.push({role:'assistant',content:respuesta});
+  }catch{
+    document.getElementById('ia-typing')?.remove();
+    agregarMsgIACadete('bot','Error de conexión. Intentá de nuevo.');
+  }
+  btn.disabled=false;
+}
+
+setInterval(cargarViajes,20000);
+
+sb.auth.getSession().then(({data:{session}})=>{
+  if(!session){window.location.href='/login.html';}
+  else{cargarViajes();}
 });
 
-function conectarMPCadete(){
-  const CLIENT_ID = '3886989011728021';
-  const REDIRECT_URI = encodeURIComponent('https://puertaapuerta.vercel.app/oauth-callback-cadete.html');
-  const STATE = 'cadete';
-  const url = `https://auth.mercadopago.com.ar/authorization?client_id=${CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
-  window.location.href = url;
-}
+function conectarMPCadete(){const CLIENT_ID='3886989011728021';const REDIRECT_URI=encodeURIComponent('https://puertaapuerta.vercel.app/oauth-callback-cadete.html');const url=`https://auth.mercadopago.com.ar/authorization?client_id=${CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${REDIRECT_URI}&state=cadete`;window.location.href=url;}
 
-async function checkMPCadete(){
-  try {
-    const {data:{session}} = await sb.auth.getSession();
-    if(!session) return;
-    const {data} = await sb.from('cadetes').select('mp_conectado').eq('email', session.user.email).single();
-    if(data?.mp_conectado){
-      document.getElementById('cad-mp-no').style.display='none';
-      document.getElementById('cad-mp-si').style.display='flex';
-    }
-  } catch {}
-}
-
-setTimeout(checkMPCadete, 1000);
-
-// REALTIME para cadetes
 function iniciarRealtimeCadete(){
-  try {
-    sb.channel('viajes-nuevos')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'pedidos',
-        filter: 'tipo_delivery=eq.app'
-      }, (payload) => {
-        if(payload.new.estado === 'preparando'){
-          sonarViaje();
-          toast('🛵 ¡Nuevo viaje disponible!', 4000);
-          cargarViajes();
-        }
-      })
-      .subscribe();
-  } catch(e) {}
+  try{sb.channel('viajes-nuevos').on('postgres_changes',{event:'UPDATE',schema:'public',table:'pedidos',filter:'tipo_delivery=eq.app'},(payload)=>{if(payload.new.estado==='preparando'){sonarViaje();toast('🛵 ¡Nuevo viaje disponible!',4000);cargarViajes();}}).subscribe();}catch{}
 }
 
-function sonarViaje(){
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [784, 659, 784, 880].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.12 + 0.15);
-      osc.start(ctx.currentTime + i * 0.12);
-      osc.stop(ctx.currentTime + i * 0.12 + 0.15);
-    });
-  } catch(e) {}
-}
+function sonarViaje(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[784,659,784,880].forEach((freq,i)=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=freq;osc.type='sine';gain.gain.setValueAtTime(0.3,ctx.currentTime+i*.12);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+i*.12+.15);osc.start(ctx.currentTime+i*.12);osc.stop(ctx.currentTime+i*.12+.15);});}catch{}}
 
-if('Notification' in window && Notification.permission === 'default'){
-  Notification.requestPermission();
-}
+if('Notification' in window&&Notification.permission==='default'){Notification.requestPermission();}
 iniciarRealtimeCadete();
 </script>
 </body>

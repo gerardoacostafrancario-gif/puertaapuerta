@@ -359,8 +359,9 @@ async function inicializarNotificaciones(userId) {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
     const messaging = firebase.messaging();
 
-    // Registrar el service worker de Firebase
+    // Registrar el service worker de Firebase y esperar que esté activo
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    await navigator.serviceWorker.ready;
     console.log('🔔 Service Worker Firebase registrado');
 
     // Pedir permiso al usuario

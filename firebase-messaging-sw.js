@@ -7,16 +7,16 @@ firebase.initializeApp({
   projectId: "puerta-a-puerta-dc67c",
   storageBucket: "puerta-a-puerta-dc67c.firebasestorage.app",
   messagingSenderId: "685654039640",
-  appId: "1:685654039640:web:28f9f623c7642a4ef87e2d"
+  appId: "1:685654039640:web:28f9f623c7642a4ef87e2d",
+  measurementId: "G-Z1QKZBRSGX"
 });
 
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  console.log('Notificación en background:', payload);
   const { title, body, icon } = payload.notification;
   self.registration.showNotification(title, {
     body,
-    icon: icon || '/icono.png'
+    icon: icon || '/icons/icon-192.png'
   });
 });

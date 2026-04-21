@@ -456,29 +456,60 @@ const RUBROS = [
   {id:'kiosco',label:'Kiosco',emoji:'🏪',img:'https://images.pexels.com/photos/8867645/pexels-photo-8867645.jpeg?w=600&q=80'},
 ];
 
-function renderRubros() {
-  document.getElementById('comercios-container').innerHTML = RUBROS.map(r => `
+async function renderRubros() {
+  // Verificar qué categorías tienen promos activas
+  let categoriasConPromo = new Set();
+  try {
+    const hoy = new Date().toISOString().split('T')[0];
+    const ids = allComercios.map(c=>c.id);
+    if (ids.length) {
+      const {data} = await sb.from('promociones').select('comercio_id').eq('activa',true).gte('fecha_fin',hoy).in('comercio_id',ids);
+      const comerciosConPromo = new Set((data||[]).map(p=>p.comercio_id));
+      allComercios.forEach(c => { if (comerciosConPromo.has(c.id)) categoriasConPromo.add(c.categoria); });
+    }
+  } catch {}
+
+  document.getElementById('comercios-container').innerHTML = RUBROS.map(r => {
+    const tienePromo = categoriasConPromo.has(r.id);
+    const promoBadge = tienePromo ? `<div style="position:absolute;top:10px;left:10px;z-index:3;background:#FF6B35;color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🔥 Ofertas</div>` : '';
+    return `
     <div class="com-card" onclick="abrirRubro('${r.id}','${r.label}')">
-      <div class="com-img"><img src="${r.img}" alt="${r.label}" loading="lazy"/><div class="com-img-overlay"></div></div>
-      <div class="com-info"><div class="com-name">${r.emoji} ${r.label}</div><div class="com-meta"><span>Tocá para ver todos</span></div></div>
-    </div>`).join('');
+      <div class="com-img"><img src="${r.img}" alt="${r.label}" loading="lazy"/><div class="com-img-overlay"></div>${promoBadge}</div>
+      <div class="com-info"><div class="com-name">${r.emoji} ${r.label}</div><div class="com-meta"><span>Tocá para ver todos</span>${tienePromo?'<span style="color:#FF6B35;font-weight:700;">🔥 Con ofertas</span>':''}</div></div>
+    </div>`;
+  }).join('');
 }
 
-function abrirRubro(catId, label) {
+async function abrirRubro(catId, label) {
   const lista = allComercios.filter(c => c.categoria === catId);
   const tiempos = {comida:'20–30',carniceria:'15–25',farmacia:'10–20',supermercado:'25–35',verduleria:'20–30',panaderia:'10–20',heladeria:'15–25',bebidas:'10–20',mascotas:'20–30'};
   const envios = {comida:'$800',carniceria:'$600',farmacia:'$700',supermercado:'$1.000',verduleria:'$800',panaderia:'$600',heladeria:'$600',bebidas:'$500',mascotas:'$700'};
   document.getElementById('det-name').textContent = label;
   document.getElementById('det-meta').textContent = lista.length ? `${lista.length} comercio${lista.length>1?'s':''} disponible${lista.length>1?'s':''}` : 'Próximamente en tu zona';
   document.getElementById('cart-float').style.display = 'none';
+
+  // Cargar promos activas de estos comercios
+  let promosActivas = {};
+  try {
+    const ids = lista.map(c=>c.id);
+    const hoy = new Date().toISOString().split('T')[0];
+    const {data} = await sb.from('promociones').select('comercio_id,tipo,porcentaje').eq('activa',true).gte('fecha_fin',hoy).in('comercio_id',ids);
+    (data||[]).forEach(p => { promosActivas[p.comercio_id] = p; });
+  } catch {}
+
   if (!lista.length) {
     document.getElementById('menu-container').innerHTML = '<div class="empty"><div class="big">🏪</div><p>Todavía no hay comercios<br>de este rubro en tu zona.<br>¡Pronto habrá más!</p></div>';
   } else {
-    document.getElementById('menu-container').innerHTML = lista.map(c => `
+    document.getElementById('menu-container').innerHTML = lista.map(c => {
+      const promo = promosActivas[c.id];
+      const promoBadge = promo ? `<div style="position:absolute;top:10px;left:10px;z-index:3;background:#FF6B35;color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;letter-spacing:.03em;">🔥 ${promo.tipo==='envio_gratis'?'Envío gratis':`${promo.porcentaje}% OFF`}</div>` : '';
+      const promoInfo = promo ? `<span style="color:#FF6B35;font-weight:700;">🔥 ${promo.tipo==='envio_gratis'?'Envío gratis hoy':`${promo.porcentaje}% de descuento`}</span>` : '';
+      return `
       <div class="com-card" style="margin:14px 18px;" onclick="abrirComercio('${c.id}')">
-        <div class="com-img"><img src="${c.imagen_url||''}" alt="${c.nombre}" loading="lazy"/><div class="com-img-overlay"></div><div class="com-img-badge">${c.abierto_ahora?'<span class="tag tag-g">Abierto</span>':'<span class="closed-badge">Cerrado</span>'}</div></div>
-        <div class="com-info"><div class="com-name">${c.nombre}</div><div class="com-meta"><span>⭐ ${c.rating}</span><span>🕐 ${tiempos[c.categoria]||'20–30'} min</span><span>🛵 ${envios[c.categoria]||'$800'} envío</span></div></div>
-      </div>`).join('');
+        <div class="com-img"><img src="${c.imagen_url||''}" alt="${c.nombre}" loading="lazy"/><div class="com-img-overlay"></div>${promoBadge}<div class="com-img-badge">${c.abierto_ahora?'<span class="tag tag-g">Abierto</span>':'<span class="closed-badge">Cerrado</span>'}</div></div>
+        <div class="com-info"><div class="com-name">${c.nombre}</div><div class="com-meta"><span>⭐ ${c.rating}</span><span>🕐 ${tiempos[c.categoria]||'20–30'} min</span><span>🛵 ${envios[c.categoria]||'$800'} envío</span>${promoInfo?`<span>${promoInfo}</span>`:''}</div></div>
+      </div>`;
+    }).join('');
   }
   go('detail');
 }

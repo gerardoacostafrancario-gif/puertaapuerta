@@ -1098,7 +1098,7 @@ async function cargarOfertasBanner() {
   try {
     const hoy = new Date().toISOString().split('T')[0];
     const {data} = await sb.from('promociones')
-      .select('*,comercios(nombre,categoria,imagen_url)')
+      .select('*')
       .eq('activa',true)
       .gte('fecha_fin',hoy)
       .limit(8);
@@ -1106,7 +1106,7 @@ async function cargarOfertasBanner() {
     if (!promos.length) { document.getElementById('ofertas-banner-wrap').style.display='none'; return; }
     document.getElementById('ofertas-banner-wrap').style.display='block';
     document.getElementById('ofertas-slides').innerHTML = promos.map(p => {
-      const com = p.comercios || {};
+      const com = allComercios.find(c => c.id === p.comercio_id) || {};
       const img = com.imagen_url || imgsCategorias[com.categoria] || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80';
       const badgeLabel = p.tipo==='envio_gratis' ? 'ENVÍO GRATIS' : `${p.porcentaje}% OFF`;
       const descSub = p.descripcion || (p.tipo==='envio_gratis' ? 'En tu próximo pedido' : 'En todo el menú');

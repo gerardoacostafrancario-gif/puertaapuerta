@@ -241,11 +241,16 @@ body{background:#EDEDED;display:flex;justify-content:center;min-height:100vh;ove
   </div>
 </div>
 <div class="confirmado-screen" id="s-confirmado">
-  <div class="conf-icono">🎉</div>
-  <div class="conf-titulo">¡Pedido confirmado!</div>
-  <div class="conf-sub">Tu pedido está siendo preparado.<br>Te avisamos cuando el cadete esté en camino.</div>
+  <div class="conf-icono" id="conf-icono">⏳</div>
+  <div class="conf-titulo" id="conf-titulo">Pedido enviado</div>
+  <div class="conf-sub" id="conf-sub">Esperando que el comercio confirme tu pedido...<br>Te avisamos en segundos.</div>
   <div class="conf-num"><div class="conf-num-label">Número de pedido</div><div class="conf-num-val" id="conf-num-val">#0000</div></div>
-  <button class="conf-btn" onclick="irAlTracking()">Ver seguimiento en vivo 🛵</button>
+  <button class="conf-btn" id="conf-btn" onclick="irAlTracking()" style="display:none;">Ver seguimiento en vivo 🛵</button>
+  <div id="conf-loader" style="margin-top:16px;display:flex;gap:8px;justify-content:center;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#FF6B35;animation:bounce 1.2s infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#FF6B35;animation:bounce 1.2s .2s infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#FF6B35;animation:bounce 1.2s .4s infinite;"></div>
+  </div>
 </div>
 <div class="screen active" id="s-home">
   <div class="hero">
@@ -492,7 +497,22 @@ async function abrirComercio(id){const com=allComercios.find(c=>c.id===id);if(!c
 function addCart(id,nombre,precio){if(!cart[id])cart[id]={nombre,precio,qty:0};cart[id].qty++;const qtyRow=document.getElementById(`qty-row-${id}`);const qtyN=document.getElementById(`qty-n-${id}`);if(qtyRow)qtyRow.style.display='flex';if(qtyN)qtyN.textContent=cart[id].qty;actualizarCartFloat();showToast('Agregado al carrito');}
 function addCartMenu(id,nombre,precio){addCart(id,nombre,precio);}
 function cambiarCantMenu(id,nombre,precio,delta){if(!cart[id])return;cart[id].qty=Math.max(0,cart[id].qty+delta);const qtyRow=document.getElementById(`qty-row-${id}`);const qtyN=document.getElementById(`qty-n-${id}`);if(cart[id].qty===0){delete cart[id];if(qtyRow)qtyRow.style.display='none';if(qtyN)qtyN.textContent='0';}else{if(qtyN)qtyN.textContent=cart[id].qty;}actualizarCartFloat();}
-function mostrarConfirmado(numPedido){document.getElementById('conf-num-val').textContent=`#${numPedido}`;document.getElementById('s-confirmado').classList.add('visible');}
+function mostrarConfirmado(numPedido){
+  document.getElementById('conf-num-val').textContent=`#${numPedido}`;
+  document.getElementById('conf-icono').textContent='⏳';
+  document.getElementById('conf-titulo').textContent='Pedido enviado';
+  document.getElementById('conf-sub').textContent='Esperando que el comercio confirme tu pedido...';
+  document.getElementById('conf-btn').style.display='none';
+  document.getElementById('conf-loader').style.display='flex';
+  document.getElementById('s-confirmado').classList.add('visible');
+}
+function pedidoConfirmadoPorComercio(){
+  document.getElementById('conf-icono').textContent='🎉';
+  document.getElementById('conf-titulo').textContent='¡Pedido confirmado!';
+  document.getElementById('conf-sub').textContent='El comercio aceptó tu pedido.\nYa está siendo preparado 🍳';
+  document.getElementById('conf-btn').style.display='block';
+  document.getElementById('conf-loader').style.display='none';
+}
 function irAlTracking(){document.getElementById('s-confirmado').classList.remove('visible');iniciarTracking();go('tracking');}
 function actualizarCartFloat(){const items=Object.values(cart);const total=items.reduce((s,i)=>s+i.precio*i.qty,0);const count=items.reduce((s,i)=>s+i.qty,0);const f=document.getElementById('cart-float');if(count>0){f.style.display='flex';document.getElementById('cf-count').textContent=`Ver carrito (${count} producto${count>1?'s':''})`;document.getElementById('cf-total').textContent=`$${total.toLocaleString('es-AR')}`;}else{f.style.display='none';}}
 function selPay(el,method){document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');payMethod=method;}
@@ -516,6 +536,29 @@ async function confirmarPedido(){
   const pedido={comercio_id:comercioId,usuario_id:userId,items,subtotal:sub,costo_envio:800,total,metodo_pago:payMethod,estado:'nuevo',direccion_entrega:getDireccionEntrega(),notas:nota,comision_nortpi:Math.round(sub*0.12),pago_cadete:Math.round(800*0.7)};
   try{const{data,error}=await sb.from('pedidos').insert([pedido]).select().single();if(error){console.error('❌ Error:',error.message);showToast('Error al guardar el pedido: '+error.message,5000);}else{console.log('✅ Pedido guardado:',data);}currentPedido=data||{...pedido,numero:Math.floor(Math.random()*9000)+1000};}catch(e){console.error('❌ Excepción:',e);currentPedido={...pedido,numero:Math.floor(Math.random()*9000)+1000};}
   const itemsParaPago=[...items];cart={};actualizarCartFloat();btn.disabled=false;btn.textContent='Confirmar pedido';
+
+  // Escuchar cuando el comercio acepta el pedido
+  if(currentPedido?.id){
+    const pedidoId=currentPedido.id;
+    const ch=sb.channel('pedido-confirmado-'+pedidoId)
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'pedidos',filter:`id=eq.${pedidoId}`},(payload)=>{
+        if(payload.new.estado==='preparando'){
+          pedidoConfirmadoPorComercio();
+          sb.removeChannel(ch);
+        }
+      }).subscribe();
+    // También hacer polling como fallback
+    const poll=setInterval(async()=>{
+      try{
+        const{data}=await sb.from('pedidos').select('estado').eq('id',pedidoId).single();
+        if(data?.estado==='preparando'||data?.estado==='en_camino'||data?.estado==='entregado'){
+          pedidoConfirmadoPorComercio();
+          clearInterval(poll);
+        }
+      }catch{}
+    },5000);
+  }
+
   if(payMethod==='mercadopago'){const cartSub=itemsParaPago.reduce((s,i)=>s+i.precio*i.qty,0);localStorage.setItem('pap_pedido_pago',JSON.stringify({items:itemsParaPago.map(i=>({nombre:i.nombre,qty:i.qty,precio:i.precio,quantity:i.qty,unit_price:i.precio,title:i.nombre})),total:cartSub+800,envio:800,comercio:currentComercio?.nombre||'Comercio'}));localStorage.setItem('pap_pedido_actual',currentPedido?.id||'');window.location.href='pago.html';return;}
   mostrarConfirmado(currentPedido?.numero||Math.floor(Math.random()*9000)+1000);
 }
